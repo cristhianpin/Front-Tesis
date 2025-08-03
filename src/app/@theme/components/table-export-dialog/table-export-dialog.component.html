@@ -1,0 +1,47 @@
+<nb-card
+  accent="success"
+  [nbSpinner]="showSpinner"
+  nbSpinnerStatus="success"
+  nbSpinnerSize="small"
+  [nbSpinnerMessage]="spinnerMessage | translate"
+>
+  <nb-card-header class="modal-header">
+    <span>Exportar tabla</span>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <div class="row">
+      <div class="col-md-12">
+        <p class="subtitle">Formato</p>
+        <nb-radio-group [(ngModel)]="format" (valueChange)="formatSelected($event)">
+          <nb-radio value="xls"><i class="fa fa-file-excel"></i>&nbsp;(XLS) Hoja de calculo excel</nb-radio>
+          <!-- <nb-radio value="pdf"><i class="fa fa-file-pdf"></i>&nbsp;(PDF) Portable document format</nb-radio>-->
+          <!-- <nb-radio value="csv"><i class="fa fa-file-alt"></i>&nbsp;(CSV) Valores separados por coma</nb-radio> -->
+        </nb-radio-group>
+      </div>
+    </div>
+    <!-- <div class="row" style="margin-top: 10px">
+      <div class="col-md-4"><p class="subtitle">Separador</p></div>
+      <div class="col-md-8">
+        <nb-select name="pageSize" fullWidth placeholder="Seleccione" [(ngModel)]="separator" [disabled]="separatorDisabled">
+          <nb-option value=",">( , ) Coma</nb-option>
+          <nb-option value=";">( ; ) Punto y coma</nb-option>
+          <nb-option value="|">( | ) Pipe</nb-option>
+          <nb-option value=":">( : ) Dos puntos</nb-option>
+        </nb-select>
+      </div>
+    </div> -->
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button nbButton type="button" shape="rectangle" outline style="cursor: pointer" (click)="close()">
+      <em class="fa fa-times"></em>&nbsp;Cerrar
+    </button>
+    <button nbButton shape="rectangle" outline status="success" style="cursor: pointer" (click)="onSubmit()">
+      <em class="fa fa-download"></em>&nbsp;Exportar
+    </button>
+  </nb-card-footer>
+</nb-card>

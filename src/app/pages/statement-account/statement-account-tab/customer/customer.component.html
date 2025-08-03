@@ -1,0 +1,80 @@
+<nb-card accent="info">
+  <nb-card-body>
+    <h6 class="mb-3"><strong>DATOS DEL CLIENTE</strong></h6>
+
+    <table class="table table-hover table-striped table-bordered text-center align-middle">
+      <thead class="table-primary">
+        <tr>
+          <th>IDENTIFICACIÓN</th>
+          <th>NOMBRES COMPLETOS</th>
+          <th>CELULAR</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ customer?.identification }}</td>
+          <td>{{ customer?.client }}</td>
+          <td>{{ customer?.phones }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="separator separator-dashed my-4"></div>
+
+    <h6 class="mb-3"><strong>DESCRIPCIÓN DEL INMUEBLE</strong></h6>
+
+    <table class="table table-hover table-striped table-bordered text-center align-middle">
+      <thead class="table-primary">
+        <tr>
+          <th>PROYECTO</th>
+          <th>ETAPA</th>
+          <th>MODELO</th>
+          <th>UBICACIÓN</th>
+          <th>M2 CONSTRUCCIÓN</th>
+          <th>M2 TERRENO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ property?.project }} - {{ property?.stage }}</td>
+          <td>{{ property?.stage }}</td>
+          <td>{{ property?.model }}</td>
+          <td>{{ property?.location }}</td>
+          <td>{{ property?.construction_m2 }}</td>
+          <td>{{ property?.land_m2 }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="separator separator-dashed my-4"></div>
+
+    <h6 class="mb-3"><strong>FINANCIAMIENTO</strong></h6>
+
+    <table class="table table-hover table-striped table-bordered text-center align-middle">
+      <thead class="table-primary">
+        <tr>
+          <th>VALOR NETO</th>
+          <th>CUOTA DE ENTRADA</th>
+          <th>CRÉDITO DE HIPOTECA</th>
+          <th>VALOR PAGADO</th>
+          <th>VALOR PENDIENTE</th>
+          <th>CUOTAS VENCIDAS</th>
+          <th>VALOR VENCIDO</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>${{ agreements?.value_net }}</td>
+          <td>${{ financial?.entrance }}</td>
+          <td>${{ financial?.mortgage_credit }}</td>
+          <td>${{ agreements?.value_payment }}</td>
+          <td>${{ agreements?.value_pending }}</td>
+          <td [ngStyle]="{ color: agreements?.value_quota?.color }">
+            {{ agreements?.value_quota?.quantity }}
+          </td>
+          <td [ngStyle]="{ color: agreements?.value_quota?.color }">${{ agreements?.value_quota?.value }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </nb-card-body>
+</nb-card>

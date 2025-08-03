@@ -1,0 +1,166 @@
+<nb-card
+  accent="info"
+  [nbSpinner]="showSpinner"
+  nbSpinnerStatus="primary"
+  nbSpinnerSize="small"
+  [style]="modalStyle"
+  [nbSpinnerMessage]="spinnerMessage | translate"
+>
+  <nb-card-header>
+    <span *ngIf="isCreate">Nuevo movimiento</span>
+    <span *ngIf="isUpdate">Modificar precio venta plataforma</span>
+    <span *ngIf="isRead">Detalle movimiento</span>
+
+    <button type="button" class="close" aria-label="Close" (click)="close()" *ngIf="isModal">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <button
+      *ngIf="!isModal"
+      nbButton
+      class="close"
+      type="button"
+      shape="rectangle"
+      outline
+      style="cursor: pointer"
+      [routerLink]="isCreate ? '../list' : '../../list'"
+    >
+      <em class="fa fa-arrow-left"></em>&nbsp;{{ 'button.back' | translate }}
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <form [formGroup]="objForm" (ngSubmit)="onSubmit()">
+      <div class="row" *ngIf="!isCreate">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label for="code" [ngClass]="{ 'text-danger': submitted && f.code.errors }">
+              {{ isCreate ? 'Código temporal' : 'Código' }}
+            </label>
+            <input type="text" class="form-control" id="code" placeholder="code" formControlName="code" readonly="true" />
+            <div *ngIf="submitted && f.code.errors" class="text-danger">
+              <div *ngIf="f.code.errors.required">Es requerido</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label for="name" [ngClass]="{ 'text-danger': submitted && f.name.errors }">
+              <span *ngIf="required('name')" class="text-danger">*</span>
+              Motivo
+            </label>
+            <input
+              *ngIf="f.type.value == 'OUT'"
+              type="text"
+              nbInput
+              fullWidth
+              [status]="submitted && f.name.errors ? 'danger' : ''"
+              placeholder="Ingrese asunto"
+              id="v"
+              formControlName="name"
+            />
+            <nb-select
+              *ngIf="f.type.value == 'IN' || isCreate"
+              placeholder="Seleccione motivo"
+              outline
+              fullWidth
+              [status]="submitted && f.name.errors ? 'danger' : ''"
+              shape="rectangle"
+              id="name"
+              formControlName="name"
+            >
+              <nb-option *ngFor="let itemReasonInEnum of listReasonInEnum" [value]="itemReasonInEnum">{{
+                itemReasonInEnum | translate
+              }}</nb-option>
+            </nb-select>
+            <div *ngIf="submitted && f.name.errors" class="text-danger">
+              <div *ngIf="f.name.errors.required">Es requerido</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label for="value" [ngClass]="{ 'text-danger': submitted && f.value.errors }">
+              <span *ngIf="required('value')" class="text-danger">*</span>
+              Monto
+            </label>
+            <nb-form-field>
+              <input
+                type="text"
+                nbInput
+                fullWidth
+                digitOnly
+                decimal="true"
+                [status]="submitted && f.value.errors ? 'danger' : ''"
+                placeholder="Ingrese monto"
+                (keypress)="onInputDecimal($event)"
+                id="value"
+                formControlName="value"
+              />
+            </nb-form-field>
+            <div *ngIf="submitted && f.value.errors" class="text-danger">
+              <div *ngIf="f.value.errors.required">Es requerido</div>
+              <div *ngIf="f.value.errors.invalidDecimal">Ingresa un número decimal válido.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label for="description" [ngClass]="{ 'text-danger': submitted && f.description.errors }">
+              <span *ngIf="required('description')" class="text-danger">*</span>
+              Observación
+            </label>
+            <textarea
+              nbInput
+              fullWidth
+              [status]="submitted && f.description.errors ? 'danger' : ''"
+              placeholder="Ingrese observación"
+              formControlName="description"
+            ></textarea>
+
+            <!-- <input
+              type="text"
+              nbInput
+              fullWidth
+              [status]="submitted && f.description.errors ? 'danger' : ''"
+              placeholder="Ingrese observación"
+              id="v"
+              formControlName="description"
+            /> -->
+            <div *ngIf="submitted && f.description.errors" class="text-danger">
+              <div *ngIf="f.description.errors.required">Es requerido</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button nbButton type="button" shape="rectangle" status="basic" outline style="cursor: pointer" (click)="close()">
+      <!-- <em class="fa fa-times"></em>&nbsp;Cancelar -->
+      <nb-icon icon="close-outline" pack="eva"> </nb-icon> {{ 'button.cancel' | translate }}
+    </button>
+
+    <button
+      nbButton
+      *ngIf="isCreate || isUpdate"
+      shape="rectangle"
+      outline
+      status="success"
+      style="cursor: pointer"
+      (click)="onSubmit()"
+    >
+      <!-- <em class="fa fa-hdd"></em>&nbsp;Guardar -->
+      <nb-icon icon="save-outline" pack="eva"> </nb-icon> {{ 'button.save' | translate }}
+    </button>
+  </nb-card-footer>
+</nb-card>

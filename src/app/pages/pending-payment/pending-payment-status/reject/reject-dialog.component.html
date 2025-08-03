@@ -1,0 +1,37 @@
+<nb-card
+  accent="danger"
+  [nbSpinner]="loading"
+  nbSpinnerStatus="danger"
+  nbSpinnerSize="small"
+  [nbSpinnerMessage]="loadingMsg | translate"
+  style="width: 600px; max-width: 90vw; height: 300px"
+>
+  <nb-card-header class="modal-header">
+    <span>{{ title }}</span>
+    <button type="button" class="close" aria-label="Close" (click)="onNoClick()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <div class="container">
+      <p><b>¿Está usted seguro?</b></p>
+      <p>{{ description }}</p>
+
+      <!-- Campo de Comentario usando FormControl -->
+      <nb-form-field>
+        <textarea nbInput fullWidth placeholder="Ingrese un comentario" [formControl]="commentControl"></textarea>
+      </nb-form-field>
+    </div>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button nbButton shape="rectangle" outline style="cursor: pointer" (click)="onNoClick()">
+      <em class="fa fa-fw fa-times"></em>&nbsp;Cancelar
+    </button>
+
+    <button nbButton type="button" shape="rectangle" outline status="danger" style="cursor: pointer" (click)="onYesClick()">
+      <nb-icon icon="close-circle-outline" pack="eva"></nb-icon>{{ 'button.rejectPayment' | translate }}
+    </button>
+  </nb-card-footer>
+</nb-card>

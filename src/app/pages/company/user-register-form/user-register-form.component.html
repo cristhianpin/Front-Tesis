@@ -1,0 +1,141 @@
+<nb-card
+  accent="info"
+  [nbSpinner]="showSpinner"
+  nbSpinnerStatus="primary"
+  nbSpinnerSize="small"
+  [style]="modalStyle"
+  [nbSpinnerMessage]="spinnerMessage | translate"
+>
+  <nb-card-header>
+    <span *ngIf="isCreate">Nuevo mayorista</span>
+    <span *ngIf="isUpdate">Modificar mayorista</span>
+    <span *ngIf="isRead">Detalle mayorista</span>
+
+    <button type="button" class="close" aria-label="Close" (click)="close()" *ngIf="isModal">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <button
+      *ngIf="!isModal"
+      nbButton
+      class="close"
+      type="button"
+      shape="rectangle"
+      outline
+      style="cursor: pointer"
+      [routerLink]="isCreate ? '../list' : '../../list'"
+    >
+      <em class="fa fa-arrow-left"></em>&nbsp;{{ 'button.back' | translate }}
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <form [formGroup]="objForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label for="firstName" [ngClass]="{ 'text-danger': submitted && f.firstName.errors }">
+              <span *ngIf="required('firstName')" class="text-danger">*</span>
+              Nombre
+            </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              [status]="submitted && f.firstName.errors ? 'danger' : ''"
+              placeholder="Ingrese nombre"
+              id="v"
+              formControlName="firstName"
+            />
+
+            <div *ngIf="submitted && f.firstName.errors" class="text-danger">
+              <div *ngIf="f.firstName.errors.required">Es requerido</div>
+              <div *ngIf="f.firstName.errors.minlength">Contraseña mínima de 3 caracteres</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName" [ngClass]="{ 'text-danger': submitted && f.lastName.errors }">
+              <span *ngIf="required('lastName')" class="text-danger">*</span>
+              Apellidos
+            </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              [status]="submitted && f.lastName.errors ? 'danger' : ''"
+              placeholder="Ingrese apellidos"
+              id="v"
+              formControlName="lastName"
+            />
+
+            <div *ngIf="submitted && f.lastName.errors" class="text-danger">
+              <div *ngIf="f.lastName.errors.required">Es requerido</div>
+              <div *ngIf="f.lastName.errors.minlength">Contraseña mínima de 3 caracteres</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email" [ngClass]="{ 'text-danger': submitted && f.email.errors }">
+              <span *ngIf="required('email')" class="text-danger">*</span>
+              email
+            </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              [status]="submitted && f.email.errors ? 'danger' : ''"
+              placeholder="Ingrese correo electrónico"
+              id="v"
+              formControlName="email"
+            />
+
+            <div *ngIf="submitted && f.email.errors" class="text-danger">
+              <div *ngIf="f.email.errors.required">Es requerido</div>
+              <div *ngIf="f.email.errors.email">Correo electrónico debe ser válido!</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password" [ngClass]="{ 'text-danger': submitted && f.password.errors }">
+              <span *ngIf="required('password')" class="text-danger">*</span>
+              Contraseña
+            </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              [status]="submitted && f.password.errors ? 'danger' : ''"
+              placeholder="Ingrese contraseña"
+              id="v"
+              formControlName="password"
+            />
+
+            <div *ngIf="submitted && f.password.errors" class="text-danger">
+              <div *ngIf="f.password.errors.required">Es requerido</div>
+              <div *ngIf="f.password.errors.minlength">Contraseña mínima de 8 caracteres</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button nbButton type="button" shape="rectangle" status="basic" outline style="cursor: pointer" (click)="close()">
+      <nb-icon icon="close-outline" pack="eva"> </nb-icon> {{ 'button.cancel' | translate }}
+    </button>
+
+    <button
+      nbButton
+      *ngIf="isCreate || isUpdate"
+      shape="rectangle"
+      outline
+      status="success"
+      style="cursor: pointer"
+      (click)="onSubmit()"
+    >
+      <nb-icon icon="save-outline" pack="eva"> </nb-icon> {{ 'button.save' | translate }}
+    </button>
+  </nb-card-footer>
+</nb-card>

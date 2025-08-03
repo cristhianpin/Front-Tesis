@@ -1,0 +1,172 @@
+<nb-card
+  accent="info"
+  [nbSpinner]="showSpinner"
+  nbSpinnerStatus="primary"
+  nbSpinnerSize="small"
+  [style]="modalStyle"
+  [nbSpinnerMessage]="spinnerMessage | translate"
+>
+  <nb-card-header>
+    <span *ngIf="isCreate">Nuevo precio venta plataforma</span>
+    <span *ngIf="isUpdate">Modificar precio venta plataforma</span>
+    <span *ngIf="isRead">Detalle precio venta plataforma</span>
+
+    <button type="button" class="close" aria-label="Close" (click)="close()" *ngIf="isModal">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <button
+      *ngIf="!isModal"
+      nbButton
+      class="close"
+      type="button"
+      shape="rectangle"
+      outline
+      style="cursor: pointer"
+      [routerLink]="isCreate ? '../list' : '../../list'"
+    >
+      <em class="fa fa-arrow-left"></em>&nbsp;{{ 'button.back' | translate }}
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <form [formGroup]="objForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-6">
+          <label for="iamge"> Imágen </label>
+          <img [src]="platform.image" width="100%" class="shadow-4 rounded-image" />
+          <br />
+          <br />
+          <span style="text-align: center">
+            <p>{{ platform.description }}</p>
+          </span>
+        </div>
+
+        <div class="col-md-6">
+          <!-- <div class="form-group">
+            <label for="price"> Costo Mayorista </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              class="form-control"
+              [value]="platform.price | number: NUMBER_FORMAT:LOCALE"
+              readonly="true"
+            />
+          </div> -->
+
+          <div class="form-group" *ngIf="!isSale">
+            <label
+              for="cost"
+              [ngClass]="{
+                'text-danger': submitted && f.cost.errors
+              }"
+            >
+              <span *ngIf="isRequired(f.cost)" class="text-danger">{{ isRoot ? '*' : '' }}</span>
+              Costo Mayorista
+            </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              [status]="submitted && f.cost.errors ? 'danger' : 'basic'"
+              placeholder="Ingrese precio venta"
+              id="cost"
+              formControlName="cost"
+              (input)="calculateProfit()"
+              (keypress)="onInputDecimal($event)"
+              [value]="(f.cost.errors == '' ? f.cost.value : 0) | number : NUMBER_FORMAT : LOCALE"
+              [readonly]="isRoot ? false : true"
+            />
+
+            <div *ngIf="submitted && f.cost.errors" class="text-danger">
+              <div *ngIf="f.cost.errors.required">Es requerido</div>
+              <div *ngIf="f.cost.errors.invalidDecimal">Ingresa un número decimal válido.</div>
+            </div>
+          </div>
+
+          <div class="form-group" *ngIf="!isSale">
+            <label
+              for="pricePublic"
+              [ngClass]="{
+                'text-danger': submitted && f.pricePublic.errors
+              }"
+            >
+              <span *ngIf="isRequired(f.pricePublic)" class="text-danger">*</span>
+              Precio Venta Sugerido
+            </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              [status]="submitted && f.pricePublic.errors ? 'danger' : 'basic'"
+              placeholder="Ingrese precio venta"
+              id="pricePublic"
+              formControlName="pricePublic"
+              (input)="calculateProfit()"
+              (keypress)="onInputDecimal($event)"
+              [value]="(f.pricePublic.errors == '' ? f.pricePublic.value : 0) | number : NUMBER_FORMAT : LOCALE"
+            />
+
+            <div *ngIf="submitted && f.pricePublic.errors" class="text-danger">
+              <div *ngIf="f.pricePublic.errors.required">Es requerido</div>
+              <div *ngIf="f.pricePublic.errors.invalidDecimal">Ingresa un número decimal válido.</div>
+            </div>
+          </div>
+
+          <div class="form-group" *ngIf="isSale">
+            <label
+              for="pricePublic"
+              [ngClass]="{
+                'text-danger': submitted && f.pricePublic.errors
+              }"
+            >
+              <span *ngIf="isRequired(f.pricePublic)" class="text-danger">*</span>
+              Precio Venta Sugerido
+            </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              id="pricePublic"
+              [value]="f.pricePublic.value | number : NUMBER_FORMAT : LOCALE"
+              readonly="true"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="profit"> Ganancia Mayorista </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              id="profit"
+              [value]="profit | number : NUMBER_FORMAT : LOCALE"
+              readonly="true"
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button nbButton type="button" shape="rectangle" status="basic" outline style="cursor: pointer" (click)="close()">
+      <!-- <em class="fa fa-times"></em>&nbsp;Cancelar -->
+      <nb-icon icon="close-outline" pack="eva"> </nb-icon> {{ 'button.cancel' | translate }}
+    </button>
+
+    <button
+      nbButton
+      *ngIf="isCreate || isUpdate"
+      shape="rectangle"
+      outline
+      status="success"
+      style="cursor: pointer"
+      (click)="onSubmit()"
+    >
+      <!-- <em class="fa fa-hdd"></em>&nbsp;Guardar -->
+      <nb-icon icon="save-outline" pack="eva"> </nb-icon> {{ 'button.save' | translate }}
+    </button>
+  </nb-card-footer>
+</nb-card>

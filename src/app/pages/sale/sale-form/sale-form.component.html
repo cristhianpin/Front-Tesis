@@ -1,0 +1,59 @@
+<nb-card
+  [nbSpinner]="showSpinner"
+  nbSpinnerStatus="success"
+  nbSpinnerSize="small"
+  [nbSpinnerMessage]="spinnerMessage | translate"
+>
+  <nb-card-header>
+    <span *ngIf="isCreate">Nueva plataforma</span>
+    <span *ngIf="isUpdate">Modificar plataforma</span>
+    <span *ngIf="isRead">Detalle de plataforma</span>
+    <button
+      nbTooltip="Volver a listado"
+      nbTooltipPlacement="left"
+      nbTooltipStatus="info"
+      nbButton
+      class="close"
+      type="button"
+      shape="rectangle"
+      status="primary"
+      size="small"
+      outline
+      style="cursor: pointer"
+      [routerLink]="isCreate ? '../list' : '../../list'"
+    >
+      <!-- <em class="fa fa-arrow-left"></em>&nbsp;{{ 'button.back' | translate }} -->
+      <nb-icon icon="arrow-back-outline" pack="eva"> </nb-icon>{{ 'button.back' | translate }}
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body"> </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button
+      nbButton
+      type="button"
+      shape="rectangle"
+      status="basic"
+      outline
+      style="cursor: pointer"
+      [routerLink]="isCreate ? '../list' : '../../list'"
+    >
+      <!-- <em class="fa fa-times"></em>&nbsp;Cancelar -->
+      <nb-icon icon="close-outline" pack="eva"> </nb-icon> {{ 'button.cancel' | translate }}
+    </button>
+
+    <button
+      nbButton
+      *ngIf="isCreate || isUpdate"
+      shape="rectangle"
+      outline
+      status="success"
+      style="cursor: pointer"
+      (click)="onSubmit()"
+    >
+      <!-- <em class="fa fa-hdd"></em>&nbsp;Guardar -->
+      <nb-icon icon="save-outline" pack="eva"> </nb-icon> {{ 'button.save' | translate }}
+    </button>
+  </nb-card-footer>
+</nb-card>

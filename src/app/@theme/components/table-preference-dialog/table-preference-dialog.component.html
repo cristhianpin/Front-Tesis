@@ -1,0 +1,117 @@
+<nb-card accent="primary" [nbSpinner]="showSpinner" nbSpinnerStatus="primary" [nbSpinnerMessage]="spinnerMessage | translate">
+  <nb-card-header class="modal-header">
+    <span>Preferencias de tabla</span>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <!-- <span aria-hidden="true">&times;</span> -->
+      <nb-icon icon="close-outline" pack="eva"> </nb-icon>
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <form #form="ngForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-7" style="padding-right: 15px; border-right: 1px solid #edf1f7">
+          <p class="subtitle">Opciones</p>
+
+          <div class="row">
+            <div class="col-md-6">
+              <!--              <nb-toggle name="exportable" status="primary" labelPosition="end" [(ngModel)]="obj.exportable"-->
+              <!--                >Exportable</nb-toggle-->
+              <!--              >-->
+              <nb-toggle name="filterable" status="primary" labelPosition="end" [(ngModel)]="obj.filterable"
+                >Filterable</nb-toggle
+              >
+            </div>
+            <div class="col-md-6">
+              <nb-toggle name="sortable" status="primary" labelPosition="end" [(ngModel)]="obj.sortable">Sortable</nb-toggle>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <nb-toggle name="resizable" status="primary" labelPosition="end" [(ngModel)]="obj.resizable">Resizable</nb-toggle>
+            </div>
+            <div class="col-md-6">
+              <nb-toggle name="reorderable" status="primary" labelPosition="end" [(ngModel)]="obj.reorderable"
+                >Reorderable</nb-toggle
+              >
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <nb-toggle name="globalFilter" status="primary" labelPosition="end" [(ngModel)]="obj.global_filter"
+                >Global filter</nb-toggle
+              >
+            </div>
+            <div class="col-md-6">
+              <!--              <nb-toggle name="filterable" status="primary" labelPosition="end" [(ngModel)]="obj.filterable"-->
+              <!--                >Filterable</nb-toggle-->
+              <!--              >-->
+            </div>
+          </div>
+
+          <!-- <div class="row" style="padding-top: 30px; border-top: 1px solid #edf1f7">
+            <div class="col-md-6">
+              <p class="subtitle">Tamaño de página</p>
+            </div>
+            <div class="col-md-6">
+              <nb-select name="pageSize" fullWidth placeholder="Seleccione" [(ngModel)]="obj.pageSize">
+                <nb-option value="5">5</nb-option>
+                <nb-option  value="10">10</nb-option>
+                <nb-option value="25">25</nb-option>
+                <nb-option value="50">50</nb-option>
+                <nb-option value="100">100</nb-option>
+              </nb-select>
+            </div>
+          </div> -->
+          <div class="row" style="padding-top: 30px; border-top: 1px solid #edf1f7">
+            <div class="col-md-6">
+              <p class="subtitle">Tamaño de página</p>
+            </div>
+            <div class="col-md-6">
+              <nb-select name="pageSize" fullWidth placeholder="Seleccione" [(selected)]="selectedItem" readonly>
+                <nb-option value="10">10</nb-option>
+              </nb-select>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-5">
+          <p class="subtitle">Columnas</p>
+
+          <p-listbox
+            name="selectedColumns"
+            [options]="cols"
+            [metaKeySelection]="false"
+            [checkbox]="true"
+            [showToggleAll]="true"
+            [(ngModel)]="selectedCols"
+            [filter]="true"
+            [multiple]="true"
+            defaultLabel="Seleccione"
+            optionLabel="header"
+            [listStyle]="{ 'max-height': '180px' }"
+            [style]="{ border: '0px' }"
+            (onChange)="updateSelectedCols($event)"
+          >
+            <ng-template let-col pTemplate="item">
+              <div class="country-item">
+                <div>{{ col.header }}</div>
+              </div>
+            </ng-template>
+          </p-listbox>
+        </div>
+      </div>
+    </form>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button nbButton type="button" shape="rectangle" outline style="cursor: pointer" (click)="close()">
+      <nb-icon icon="close-outline" pack="eva"> </nb-icon> {{ 'button.cancel' | translate }}
+    </button>
+    <button nbButton shape="rectangle" outline status="success" style="cursor: pointer" (click)="onSubmit()">
+      <nb-icon icon="save-outline" pack="eva"> </nb-icon> {{ 'button.save' | translate }}
+    </button>
+  </nb-card-footer>
+</nb-card>

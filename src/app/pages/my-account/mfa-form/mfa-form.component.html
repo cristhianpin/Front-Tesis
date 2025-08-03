@@ -1,0 +1,130 @@
+<nb-card
+  accent="warning"
+  [nbSpinner]="showSpinner"
+  nbSpinnerStatus="success"
+  nbSpinnerSize="small"
+  [nbSpinnerMessage]="spinnerMessage | translate"
+>
+  <nb-card-header class="modal-header">
+    <span>{{ title | translate }}</span>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <form [formGroup]="objForm" (ngSubmit)="onSubmit()">
+      <div *ngIf="isQRGenerated && !showRecoveryCodes">
+        <div class="row">
+          <div class="col">
+            <div style="text-align: center"><label for="qr">Use su aplicación de autenticación</label></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <qrcode
+              *ngIf="isQRGenerated"
+              [qrdata]="urlQRCode"
+              [width]="300"
+              [elementType]="'canvas'"
+              [errorCorrectionLevel]="'M'"
+              [margin]="2"
+              [scale]="1"
+              [colorDark]="'#000000ff'"
+              [colorLight]="'#ffffffff'"
+              [imageHeight]="85"
+              [imageWidth]="85"
+            >
+            </qrcode>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="!showRecoveryCodes">
+        <div class="col-1"></div>
+        <div class="col-10">
+          <div class="form-group">
+            <label
+              for="code"
+              [ngClass]="{
+                'text-danger': submitted && (f.code.errors || codeError)
+              }"
+            >
+              <span *ngIf="required('code')" class="text-danger">*</span>
+              Código
+            </label>
+            <input
+              #code
+              type="text"
+              nbInput
+              [status]="submitted && (f.code.errors || codeError) ? 'danger' : ''"
+              [minlength]="codeLength"
+              [maxlength]="codeLength"
+              placeholder="Ingrese el código generado"
+              id="code"
+              formControlName="code"
+              name="code"
+              fullWidth
+            />
+            <div *ngIf="submitted && f.code.errors" class="text-danger">
+              <div *ngIf="f.code.errors.required">Es requerido</div>
+              <div *ngIf="f.code.errors?.minlength">El código debe tener 6 caracteres</div>
+              <div *ngIf="f.code.errors?.maxlength">El código debe tener 6 caracteres</div>
+              <div *ngIf="f.code.errors?.pattern">El código debe ser solo números</div>
+            </div>
+            <div *ngIf="submitted && codeError" class="text-danger">
+              <div>{{ codeErrorMsg | translate }}</div>
+            </div>
+          </div>
+        </div>
+        <div class="col-1"></div>
+      </div>
+    </form>
+
+    <div *ngIf="showRecoveryCodes">
+      <div class="row">
+        <div class="col">
+          <nb-alert outline="warning"> {{ 'mfa.recovery-alert-line1' | translate }} </nb-alert>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">{{ recoveryCodes[0] }}</div>
+        <div class="col-6">{{ recoveryCodes[1] }}</div>
+      </div>
+      <div class="row">
+        <div class="col-6">{{ recoveryCodes[2] }}</div>
+        <div class="col-6">{{ recoveryCodes[3] }}</div>
+      </div>
+      <div class="row">
+        <div class="col-6">{{ recoveryCodes[4] }}</div>
+        <div class="col-6">{{ recoveryCodes[5] }}</div>
+      </div>
+      <div class="row">
+        <div class="col-6">{{ recoveryCodes[6] }}</div>
+        <div class="col-6">{{ recoveryCodes[7] }}</div>
+      </div>
+      <div class="row">
+        <div class="col-6">{{ recoveryCodes[8] }}</div>
+        <div class="col-6">{{ recoveryCodes[9] }}</div>
+      </div>
+    </div>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button nbButton type="button" shape="rectangle" outline size="small" style="cursor: pointer" (click)="closeMFA()">
+      <em class="fa fa-times"></em>&nbsp;Cerrar
+    </button>
+    <button
+      *ngIf="!showRecoveryCodes"
+      nbButton
+      shape="rectangle"
+      outline
+      size="small"
+      [status]="usingMFA ? 'danger' : 'success'"
+      style="cursor: pointer"
+      (click)="onSubmit()"
+    >
+      <em class="fa {{ usingMFA ? 'fa-times' : 'fa-check' }}"></em>&nbsp;{{ usingMFA ? 'Desactivar' : 'Activar' }}
+    </button>
+  </nb-card-footer>
+</nb-card>

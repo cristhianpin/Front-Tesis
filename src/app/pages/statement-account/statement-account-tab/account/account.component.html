@@ -1,0 +1,36 @@
+<nb-card accent="info">
+  <nb-card-body>
+    <h6 class="mb-3"><strong>ESTADO DE CUENTA</strong></h6>
+
+    <table class="table table-hover table-striped table-bordered text-center align-middle">
+      <thead class="table-primary">
+        <tr>
+          <th style="white-space: nowrap;">CUOTA</th>
+          <th style="white-space: nowrap;">FECHA DE VENCIMIENTO</th>
+          <th style="white-space: nowrap;">CONCEPTO</th>
+          <th style="white-space: nowrap;">VALOR DE CUOTA</th>
+          <th style="white-space: nowrap;">VALOR PAGADO</th>
+          <th style="white-space: nowrap;">VALOR APLICADO</th>
+          <th style="white-space: nowrap;">FECHA DE PAGO</th>
+          <th style="white-space: nowrap;">REFERENCIA</th>
+          <th style="white-space: nowrap;">DÍAS DE MORA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let payment of paymentDetails; let i = index">
+          <td>{{ payment?.installment_number || '0' }}</td>
+          <td>{{ payment?.due_date || 'N/A' }}</td>
+          <td>{{ payment?.concept || 'N/A' }}</td>
+          <td>${{ payment?.installment_value || '0.00' }}</td>
+          <td class="text-success fw-bold">${{ payment?.payment_value || '0.00' }}</td>
+          <td>${{ payment?.applied_payment || '0.00' }}</td>
+          <td>{{ payment?.payment_date || 'N/A' }}</td>
+          <td>{{ payment?.receipt_number || 'N/A' }}</td>
+          <td class="{{ payment?.late_days > 0 ? 'text-danger fw-bold' : '' }}">
+            {{ payment?.late_days || '0' }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </nb-card-body>
+</nb-card>

@@ -1,0 +1,318 @@
+<nb-card
+  [nbSpinner]="showSpinner"
+  nbSpinnerStatus="success"
+  nbSpinnerSize="small"
+  [nbSpinnerMessage]="spinnerMessage | translate"
+>
+  <nb-card-header>
+    <span *ngIf="isCreate">Nueva plataforma</span>
+    <span *ngIf="isUpdate">Detalle plataforma: {{ platformName }}</span>
+    <span *ngIf="isRead">Detalle de plataforma</span>
+    <button
+      nbTooltip="Volver a listado"
+      nbTooltipPlacement="left"
+      nbTooltipStatus="info"
+      nbButton
+      class="close"
+      type="button"
+      shape="rectangle"
+      status="primary"
+      outline
+      style="cursor: pointer"
+      [routerLink]="isCreate ? '../list' : '../../list'"
+    >
+      <!-- <em class="fa fa-arrow-left"></em>&nbsp;{{ 'button.back' | translate }} -->
+      <nb-icon icon="arrow-back-outline" pack="eva"> </nb-icon>{{ 'button.back' | translate }}
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <nb-tabset (changeTab)="onChangeTab($event)">
+      <nb-tab tabTitle="Resumen" tabIcon="briefcase-outline" tabId="briefcase">
+        <form [formGroup]="objForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="code" [ngClass]="{ 'text-danger': submitted && f.code.errors }">
+                  {{ isCreate ? 'Código temporal' : 'Código' }}
+                </label>
+                <input type="text" class="form-control" id="code" placeholder="code" formControlName="code" readonly="true" />
+                <div *ngIf="submitted && f.code.errors" class="text-danger">
+                  <div *ngIf="f.code.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="name" [ngClass]="{ 'text-danger': submitted && f.name.errors }">
+                  <span *ngIf="required('name')" class="text-danger">*</span>
+                  Nombre
+                </label>
+                <input
+                  type="text"
+                  nbInput
+                  fullWidth
+                  [status]="submitted && f.name.errors ? 'danger' : 'basic'"
+                  placeholder="Ingrese nombre"
+                  id="v"
+                  formControlName="name"
+                />
+                <div *ngIf="submitted && f.name.errors" class="text-danger">
+                  <div *ngIf="f.name.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="description" [ngClass]="{ 'text-danger': submitted && f.description.errors }">
+                  <span *ngIf="required('description')" class="text-danger">*</span>
+                  Descripción
+                </label>
+                <input
+                  type="text"
+                  nbInput
+                  fullWidth
+                  [status]="submitted && f.description.errors ? 'danger' : 'basic'"
+                  placeholder="Ingrese descripción"
+                  id="v"
+                  formControlName="description"
+                />
+                <div *ngIf="submitted && f.description.errors" class="text-danger">
+                  <div *ngIf="f.description.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="image" [ngClass]="{ 'text-danger': submitted && f.image.errors }">
+                  <span *ngIf="required('image')" class="text-danger">*</span>
+                  URL imágen
+                </label>
+                <input
+                  type="text"
+                  nbInput
+                  fullWidth
+                  [status]="submitted && f.image.errors ? 'danger' : 'basic'"
+                  placeholder="Ingrese url imagen"
+                  id="v"
+                  formControlName="image"
+                />
+                <div *ngIf="submitted && f.image.errors" class="text-danger">
+                  <div *ngIf="f.image.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="cost" [ngClass]="{ 'text-danger': submitted && f.cost.errors }">
+                  <span *ngIf="required('cost')" class="text-danger">*</span>
+                  Costo Natvi <small>(Solo números decimales)</small>
+                </label>
+                <nb-form-field>
+                  <!-- <nb-icon nbPrefix icon="hash-outline" pack="eva"></nb-icon> -->
+                  <input
+                    type="text"
+                    nbInput
+                    fullWidth
+                    digitOnly
+                    decimal="true"
+                    [status]="submitted && f.cost.errors ? 'danger' : 'basic'"
+                    placeholder="Ingrese monto"
+                    (keypress)="onInputDecimal($event)"
+                    id="cost"
+                    formControlName="cost"
+                  />
+                </nb-form-field>
+                <div *ngIf="submitted && f.cost.errors" class="text-danger">
+                  <div *ngIf="f.cost.errors.required">Es requerido</div>
+                  <div *ngIf="f.cost.errors.invalidDecimal">Ingresa un número decimal válido.</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="pricePublic" [ngClass]="{ 'text-danger': submitted && f.pricePublic.errors }">
+                  <span *ngIf="required('pricePublic')" class="text-danger">*</span>
+                  Precio Venta Sugerido <small>(Solo números decimales)</small>
+                </label>
+                <nb-form-field>
+                  <!-- <nb-icon nbPrefix icon="hash-outline" pack="eva"></nb-icon> -->
+                  <input
+                    type="text"
+                    nbInput
+                    fullWidth
+                    digitOnly
+                    decimal="true"
+                    [status]="submitted && f.pricePublic.errors ? 'danger' : 'basic'"
+                    placeholder="Ingrese precio (PVP)"
+                    id="v"
+                    formControlName="pricePublic"
+                    (keypress)="onInputDecimal($event)"
+                  />
+                </nb-form-field>
+                <div *ngIf="submitted && f.pricePublic.errors" class="text-danger">
+                  <div *ngIf="f.pricePublic.errors.required">Es requerido</div>
+                  <div *ngIf="f.pricePublic.errors.invalidDecimal">Ingresa un número decimal válido.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <label
+                for="duration"
+                [ngClass]="{
+                  'text-danger': submitted && f.duration.errors
+                }"
+              >
+                <span *ngIf="required('duration')" class="text-danger">*</span>
+                Duración (días)
+              </label>
+              <nb-select
+                placeholder="Selecciona duración"
+                outline
+                fullWidth
+                [status]="submitted && f.duration.errors ? 'danger' : 'primary'"
+                shape="rectangle"
+                id="duration"
+                formControlName="duration"
+              >
+                <nb-option
+                  *ngFor="let itemPlatformDurationEnum of listPlatformDurationEnum"
+                  [value]="itemPlatformDurationEnum"
+                  >{{ itemPlatformDurationEnum + ' DÍAS' | translate }}</nb-option
+                >
+              </nb-select>
+              <!-- {{ itemDuration == '1' ? itemDuration + ' mes' : itemDuration + ' meses' }} -->
+              <div *ngIf="submitted && f.duration.errors" class="text-danger">
+                <div *ngIf="f.duration.errors.required">Es requerido</div>
+              </div>
+            </div>
+            <div class="col-md-6" *ngIf="!isCreate">
+              <div class="form-group">
+                <label for="stockMin" [ngClass]="{ 'text-danger': submitted && f.stockMin.errors }">
+                  <span *ngIf="required('stockMin')" class="text-danger">*</span>
+                  Stock mínimo <small>(-9999: no aplica alerta)</small>
+                </label>
+                <input
+                  type="text"
+                  nbInput
+                  fullWidth
+                  [status]="submitted && f.stockMin.errors ? 'danger' : 'basic'"
+                  placeholder="Ingrese stock mínimo"
+                  id="v"
+                  formControlName="stockMin"
+                  [readonly]="isRoot ? false : true"
+                />
+                <div *ngIf="submitted && f.stockMin.errors" class="text-danger">
+                  <div *ngIf="f.stockMin.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6" *ngIf="!isCreate">
+              <div class="form-group">
+                <label for="expirationDays" [ngClass]="{ 'text-danger': submitted && f.expirationDays.errors }">
+                  <span *ngIf="required('expirationDays')" class="text-danger">*</span>
+                  Días expira <small>(Por defecto 3 días)</small>
+                </label>
+                <input
+                  type="text"
+                  nbInput
+                  fullWidth
+                  [status]="submitted && f.expirationDays.errors ? 'danger' : 'basic'"
+                  placeholder="Ingrese días expira"
+                  id="v"
+                  formControlName="expirationDays"
+                  [readonly]="isRoot ? false : true"
+                />
+                <div *ngIf="submitted && f.expirationDays.errors" class="text-danger">
+                  <div *ngIf="f.expirationDays.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6"></div>
+          </div>
+
+          <br />
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="isEnabled" [ngClass]="{ 'text-danger': submitted && f.isEnabled.errors }">
+                  <span *ngIf="required('isEnabled')" class="text-danger">*</span>
+                  Habilitado
+                </label>
+                <div>
+                  <nb-toggle
+                    [(ngModel)]="toggleNgModel"
+                    status="primary"
+                    labelPosition="end"
+                    formControlName="isEnabled"
+                  ></nb-toggle>
+                </div>
+                <div *ngIf="submitted && f.isEnabled.errors" class="text-danger">
+                  <div *ngIf="f.isEnabled.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <!-- <div class="form-group">
+            <label for="isEnable" [ngClass]="{ 'text-danger': submitted && f.isEnable.errors }">
+              <span *ngIf="required('isEnable')" class="text-danger">*</span>
+              Habilitado
+            </label>
+            <div>
+              <nb-toggle status="success" labelPosition="end" formControlName="isEnable">Habilitado</nb-toggle>
+            </div>
+            <div *ngIf="submitted && f.isEnable.errors" class="text-danger">
+              <div *ngIf="f.isEnable.errors.required">Es requerido</div>
+            </div>
+          </div> -->
+            </div>
+          </div>
+        </form>
+      </nb-tab>
+      <nb-tab *ngIf="!isCreate" tabTitle="Planes" tabIcon="bookmark-outline" tabId="bookmark">
+        <br />
+        <ngx-platform-plan-list [platformId]="objIdModal"></ngx-platform-plan-list>
+      </nb-tab>
+    </nb-tabset>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button
+      nbButton
+      type="button"
+      shape="rectangle"
+      status="basic"
+      outline
+      style="cursor: pointer"
+      [routerLink]="isCreate ? '../list' : '../../list'"
+    >
+      <!-- <em class="fa fa-times"></em>&nbsp;Cancelar -->
+      <nb-icon icon="close-outline" pack="eva"> </nb-icon> {{ 'button.cancel' | translate }}
+    </button>
+
+    <button
+      nbButton
+      *ngIf="isCreate || isUpdate"
+      shape="rectangle"
+      outline
+      status="success"
+      style="cursor: pointer"
+      (click)="onSubmit()"
+    >
+      <!-- <em class="fa fa-hdd"></em>&nbsp;Guardar -->
+      <nb-icon icon="save-outline" pack="eva"> </nb-icon> {{ 'button.save' | translate }}
+    </button>
+  </nb-card-footer>
+</nb-card>

@@ -1,0 +1,76 @@
+@import '~bootstrap/scss/mixins/breakpoints';
+@import '~@nebular/theme/styles/global/breakpoints';
+@import '../../../@theme/styles/themes';
+
+@include nb-install-component() {
+  nb-card {
+    transform: translate3d(0, 0, 0);
+  }
+
+  .rounded-image {
+    border-radius: 5%;
+    /* Esto hace que la imagen sea circular */
+  }
+
+  /* Estilos para el botón cuando showFilter es true */
+  .classFilter {
+    background-color: #f0f0f0; /* Color gris bajo */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    border: 1px solid #ccc; /* Borde gris */
+    transition: box-shadow 0.3s ease, border 0.3s ease; /* Transiciones suaves */
+  }
+
+  /* Estilos para el botón cuando está enfocado o activo (puedes ajustar según tus preferencias) */
+  .classFilter:focus,
+  .classFilter:active {
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Sombra ligeramente más fuerte */
+    border: 1px solid #999; /* Borde gris más oscuro */
+  }
+  /* Estilos para el botón cuando el mouse está sobre él */
+  .classFilter:hover {
+    background-color: rgba(240, 240, 240, 1); /* Fondo gris sin opacidad */
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    border: 1px solid #ccc; /* Borde gris */
+    transition: box-shadow 0.3s ease, border 0.3s ease; /* Transiciones suaves */
+  }
+
+  /* Ejemplo: Ajusta estilos en dispositivos pequeños */
+  @media (max-width: 576px) {
+    .col-sm-6 {
+      width: 100% !important; /* O ajusta según tus necesidades */
+    }
+
+    .component-none {
+      display: none; /* Oculta el botón en pantallas pequeñas */
+    }
+
+    .d-flex {
+      flex-direction: column; /* Cambia la dirección de flexión a columna en pantallas pequeñas */
+      align-items: stretch; /* Estira los elementos para llenar el ancho disponible */
+    }
+
+    .button-group {
+      margin-bottom: 1rem; /* Espaciado entre los botones en pantallas pequeñas */
+    }
+
+    .button-group button {
+      width: 100%; /* Ajusta el ancho de los botones al 100% del contenedor */
+      margin-bottom: 0.5rem; /* Espaciado entre los botones en pantallas pequeñas */
+    }
+
+    .search-container {
+      flex-direction: column; /* Cambia la dirección de flexión a columna en pantallas pequeñas */
+      align-items: stretch; /* Estira los elementos para llenar el ancho disponible */
+    }
+
+    .search-container nb-form-field,
+    .search-container button {
+      width: 100%; /* Ajusta el ancho de los elementos al 100% del contenedor */
+      margin-bottom: 0.5rem; /* Espaciado entre los elementos en pantallas pequeñas */
+    }
+
+    .search-container button {
+      margin-top: 0.5rem; /* Espaciado superior para separar el botón "Limpiar" */
+    }
+  }
+}

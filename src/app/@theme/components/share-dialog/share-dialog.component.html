@@ -1,0 +1,40 @@
+<nb-card accent="warning">
+  <nb-card-header class="modal-header">
+    <span>Enviar detalle de transacción</span>
+    <button type="button" class="close" aria-label="Close" (click)="onClose()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </nb-card-header>
+  <nb-card-body class="modal-body">
+    <nb-alert outline="primary">
+      {{ 'share.info' | translate }}
+    </nb-alert>
+    <div class="container">
+      <form [formGroup]="objForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="card p-fluid">
+              <p-chips
+                placeholder="Ingrese emails destinatarios"
+                formControlName="emails"
+                addOnBlur="true"
+                addOnTab="true"
+                [allowDuplicate]="false"
+                separator=","
+                [max]="5"
+              ></p-chips>
+            </div>
+            <div *ngIf="submitted && f.emails.errors" class="text-danger">
+              <div *ngIf="f.emails.errors.required">Es requerido</div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </nb-card-body>
+  <nb-card-footer class="modal-footer">
+    <button nbButton shape="rectangle" outline status="warning" style="cursor: pointer" (click)="onSubmit()">
+      <em class="fa fa-paper-plane"></em>&nbsp;{{ 'button.share' | translate }}
+    </button>
+  </nb-card-footer>
+</nb-card>

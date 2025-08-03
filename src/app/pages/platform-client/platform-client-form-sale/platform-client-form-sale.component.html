@@ -1,0 +1,177 @@
+<nb-card
+  accent="info"
+  [nbSpinner]="showSpinner"
+  nbSpinnerStatus="primary"
+  nbSpinnerSize="small"
+  [nbSpinnerMessage]="spinnerMessage | translate"
+>
+  <nb-card-header>
+    <span *ngIf="isSale">Vender una plataforma</span>
+
+    <button type="button" class="close" aria-label="Close" (click)="close()" *ngIf="isModal">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <nb-alert *ngIf="isConfirmAlert" status="danger" outline="danger">
+      <span>{{ messageConfirmAlert }}</span>
+    </nb-alert>
+
+    <nb-alert *ngIf="isWebAlert" outline="info">
+      <span>{{ messageWebAlert }}</span>
+    </nb-alert>
+
+    <nb-alert *ngIf="isConfirm && !isWebAlert" outline="info">
+      <span>{{ messageNoWebAlert }}</span>
+    </nb-alert>
+
+    <nb-alert *ngIf="!isConfirmAlert && isInitialAlert" outline="info">
+      <span>{{ messageInitialAlert }}</span>
+    </nb-alert>
+
+    <div class="row">
+      <div class="col-md-6" style="text-align: center">
+        <label for="iamge" class="component-none"> Imágen </label>
+        <img [src]="platform.image" width="100%" class="platform-image shadow-4 rounded-image" />
+        <br />
+        <br />
+        <span style="text-align: center">
+          <p>{{ platform.description }}</p>
+        </span>
+      </div>
+
+      <div class="col-md-6">
+        <div *ngIf="!isConfirm">
+          <div class="form-group">
+            <label for="cost"> Costo Mayorista </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              class="form-control"
+              [value]="platform.cost | number : NUMBER_FORMAT : LOCALE"
+              readonly="true"
+            />
+          </div>
+
+          <div class="form-group component-none">
+            <label for="pricePublic"> Precio Venta Sugerido </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              id="pricePublic"
+              [value]="platform.pricePublic | number : NUMBER_FORMAT : LOCALE"
+              readonly="true"
+            />
+          </div>
+
+          <div class="form-group component-none">
+            <label for="profit"> Ganancia Mayorista </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              id="profit"
+              [value]="profit | number : NUMBER_FORMAT : LOCALE"
+              readonly="true"
+            />
+          </div>
+        </div>
+
+        <div *ngIf="isConfirm">
+          <form [formGroup]="objForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+              <label for="reference"> Tipo entrega </label>
+              <br />
+              <nb-button-group size="medium" (click)="updateSingleSelectGroupValue($event)">
+                <button *ngIf="isHaveBooking" type="button" nbButtonToggle value="WEB" [(pressed)]="selectOptionWeb">
+                  <nb-icon icon="monitor-outline" pack="eva"> </nb-icon> WEB
+                </button>
+                <!-- <button type="button" nbButtonToggle value="WHATSAPP" [(pressed)]="selectOptionWhatsapp">
+                  <nb-icon icon="message-circle-outline" pack="eva"> </nb-icon> WS
+                </button> -->
+                <button type="button" nbButtonToggle value="MAIL" [(pressed)]="selectOptionMail">
+                  <nb-icon icon="email-outline" pack="eva"> </nb-icon> MAIL
+                </button>
+              </nb-button-group>
+            </div>
+
+            <div class="form-group">
+              <label for="reference" [ngClass]="{ 'text-danger': submitted && f.reference.errors }">
+                <span *ngIf="required('reference')" class="text-danger">*</span>
+                Referencia
+              </label>
+              <input
+                type="text"
+                nbInput
+                fullWidth
+                [status]="submitted && f.reference.errors ? 'danger' : 'basic'"
+                [placeholder]="selectOptionWhatsapp ? '0991758890' : 'juanperez@mail.com'"
+                id="v"
+                formControlName="reference"
+                [readonly]="selectOptionWeb ? true : false"
+              />
+
+              <!-- <div class="text-muted">
+                <small *ngIf="!selectOptionWeb">
+                  {{ selectOptionWhatsapp ? 'Ejemplo: 0991758890' : 'Ejemplo: juanperez@mail.com' }}
+                </small>
+                <small *ngIf="selectOptionWeb">Credenciales en pantalla</small>
+              </div> -->
+
+              <div *ngIf="submitted && f.reference.errors" class="text-danger">
+                <div>Es requerido</div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="note" [ngClass]="{ 'text-danger': submitted && f.note.errors }"> Nota (opcional) </label>
+              <input
+                type="text"
+                nbInput
+                fullWidth
+                [status]="submitted && f.note.errors ? 'danger' : 'basic'"
+                placeholder="Nota interna"
+                id="note"
+                formControlName="note"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button
+      class="component-none"
+      nbButton
+      type="button"
+      shape="rectangle"
+      status="basic"
+      outline
+      style="cursor: pointer"
+      (click)="close()"
+    >
+      <nb-icon icon="close-outline" pack="eva"> </nb-icon> {{ 'button.cancel' | translate }}
+    </button>
+
+    <button
+      nbButton
+      *ngIf="!isConfirm && isSale"
+      shape="rectangle"
+      outline
+      status="warning"
+      style="cursor: pointer"
+      (click)="onConfirm()"
+    >
+      <nb-icon icon="alert-circle-outline" pack="eva"> </nb-icon> {{ 'button.confirm' | translate }}
+    </button>
+
+    <button nbButton *ngIf="isConfirm" shape="rectangle" outline status="success" style="cursor: pointer" (click)="onSubmit()">
+      <nb-icon icon="save-outline" pack="eva"> </nb-icon> {{ 'button.save' | translate }}
+    </button>
+  </nb-card-footer>
+</nb-card>

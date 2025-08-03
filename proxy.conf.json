@@ -1,0 +1,9 @@
+{
+  "/api/v1": {
+    "target": "http://app-backend.test",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "ws": false
+  }
+}

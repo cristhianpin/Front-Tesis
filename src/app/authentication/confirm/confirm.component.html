@@ -1,0 +1,116 @@
+<div>
+  <h1 id="title" class="title">Administrador</h1>
+  <p class="sub-title">Acceso para mayoristas.</p>
+</div>
+
+<div aria-labelledby="title">
+  <nb-alert *ngIf="showMessageError" outline="danger" role="alert">
+    <p class="alert-title text-danger">
+      {{ messageError }}
+    </p>
+  </nb-alert>
+
+  <nb-alert *ngIf="showMessageSuccess" outline="success" role="alert">
+    <p class="alert-title text-success">
+      <strong>{{ messageSuccess }}</strong>
+    </p>
+  </nb-alert>
+
+  <!-- <div *ngIf="showNewPassword">
+    <div class="form-control-group">
+      <label class="label" for="input-password">Nueva contraseña:</label>
+      <nb-form-field>
+        <input
+          [type]="getInputTypePass1()"
+          nbInput
+          fullWidth
+          name="password1"
+          type="password"
+          id="input-password"
+          fieldSize="large"
+          autofocus
+          placeholder="Ingrese nueva contraseña"
+        />
+        <button nbSuffix nbButton type="button" ghost (click)="toggleShowPass1()">
+          <nb-icon
+            [icon]="showPassword1 ? 'eye-outline' : 'eye-off-2-outline'"
+            pack="eva"
+            [attr.aria-label]="showPassword1 ? 'hide password' : 'show password'"
+          >
+          </nb-icon>
+        </button>
+      </nb-form-field>
+    </div>
+
+    <div class="form-control-group">
+      <label class="label" for="input-password">Confirmar contraseña:</label>
+      <nb-form-field>
+        <input
+          [type]="getInputTypePass2()"
+          nbInput
+          fullWidth
+          name="password2"
+          type="password"
+          id="input-password"
+          fieldSize="large"
+          placeholder="Confirmar nueva contraseña"
+        />
+        <button nbSuffix nbButton type="button" ghost (click)="toggleShowPass2()">
+          <nb-icon
+            [icon]="showPassword2 ? 'eye-outline' : 'eye-off-2-outline'"
+            pack="eva"
+            [attr.aria-label]="showPassword2 ? 'hide password' : 'show password'"
+          >
+          </nb-icon>
+        </button>
+      </nb-form-field>
+    </div>
+
+    <div class="form-control-group accept-group">
+      <nb-checkbox name="rememberMe">Recordarme</nb-checkbox>
+      <a class="forgot-password">Olvido contraseña?</a>
+    </div>
+
+    <button
+      [disabled]="showLoading"
+      [class.btn-pulse]="showLoading"
+      nbButton
+      [nbSpinner]="showLoading"
+      nbSpinnerStatus="basic"
+      nbSpinnerMessage="Solicitando ..."
+      fullWidth
+      type="button"
+      status="primary"
+      (click)="onSubmit()"
+    >
+      {{ confirmBtn }}
+    </button>
+  </div> -->
+
+  <button
+    *ngIf="showNewToken && !showMessageSuccess"
+    [disabled]="showLoading"
+    [class.btn-pulse]="showLoading"
+    nbButton
+    [nbSpinner]="showLoading"
+    nbSpinnerStatus="basic"
+    nbSpinnerMessage="Solicitando ..."
+    fullWidth
+    type="button"
+    status="primary"
+    (click)="onSubmitNewToken()"
+  >
+    {{ newTokenBtn }}
+  </button>
+
+  <button
+    *ngIf="(showMessageError && !showNewToken) || showLogin"
+    nbButton
+    fullWidth
+    type="button"
+    status="primary"
+    routerLink="authentication/login"
+  >
+    {{ loginBtn }}
+  </button>
+</div>

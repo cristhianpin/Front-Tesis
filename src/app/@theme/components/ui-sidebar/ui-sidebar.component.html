@@ -1,0 +1,35 @@
+<!-- <h6>LAYOUTS</h6>
+  <div class="settings-row">
+    <a *ngFor="let layout of layouts"
+        href="#"
+        [class.selected]="layout.selected"
+        [attr.title]="layout.name"
+        (click)="layoutSelect(layout)">
+      <i [attr.class]="layout.icon"></i>
+    </a>
+  </div>
+<h6>SIDEBAR</h6>
+  <div class="settings-row">
+    <a *ngFor="let sidebar of sidebars"
+        href="#"
+        [class.selected]="sidebar.selected"
+        [attr.title]="sidebar.name"
+        (click)="sidebarSelect(sidebar)">
+      <i [attr.class]="sidebar.icon"></i>
+    </a>
+  </div> -->
+
+<h6>Tema</h6>
+<!-- <span>Modo claro/oscuro</span> -->
+<div class="settings-row">
+  <i class="fa fa-2x fa-sun text-warning"></i>
+  <nb-toggle status="info" [checked]="isDark" (checkedChange)="onChangeTheme($event)"></nb-toggle>
+  <i class="fa fa-2x fa-solid fa-moon"></i>
+</div>
+<div class="settings-row">
+  <span>Lenguaje</span>
+  <nb-select outline [(selected)]="obj.language" (selectedChange)="onSelectLanguage($event)">
+    <nb-option value="ES">Español</nb-option>
+    <nb-option value="EN">Ingles</nb-option>
+  </nb-select>
+</div>

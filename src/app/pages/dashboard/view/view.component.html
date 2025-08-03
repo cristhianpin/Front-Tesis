@@ -1,0 +1,89 @@
+<nb-card accent="primary">
+  <nb-card-header>
+    <h5>Resumen General</h5>
+  </nb-card-header>
+  <nb-card-body>
+    <!-- Selector de Periodo -->
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <label for="filter-period"><strong>Periodo:</strong></label>
+        <nb-select
+          fullWidth
+          id="filter-period"
+          placeholder="Seleccione un periodo"
+          [(ngModel)]="selectedPeriod"
+          (selectedChange)="onPeriodChange($event)"
+        >
+          <nb-option *ngFor="let year of ['2025', '2026', '2027', '2028', '2029', '2030']" [value]="year">
+            {{ year }}
+          </nb-option>
+        </nb-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <nb-card status="info">
+          <nb-card-header>Cursos Activos</nb-card-header>
+          <nb-card-body>{{ stats?.activeCourses }}</nb-card-body>
+        </nb-card>
+      </div>
+      <div class="col-md-6">
+        <nb-card status="success">
+          <nb-card-header>Estudiantes registrados</nb-card-header>
+          <nb-card-body>{{ stats?.totalEnrollments }}</nb-card-body>
+        </nb-card>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-12 d-flex justify-content-center">
+        <div class="text-center mb-2">
+          <strong>Gráfico de estados</strong>
+        </div>
+        <div style="width: 700px; height: 400px;">
+          <p-chart type="pie" [data]="pieChartData" [options]="chartOptions"></p-chart>
+        </div>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <nb-card>
+          <nb-card-header>Matrículas por Curso</nb-card-header>
+          <nb-card-body>
+            <p-chart type="bar" [data]="barChartData" [options]="barChartOptions"></p-chart>
+          </nb-card-body>
+        </nb-card>
+      </div>
+    </div>
+
+    <div class="row mt-4">
+      <div class="col-md-12">
+        <nb-card>
+          <nb-card-header>Últimas Inscripciones</nb-card-header>
+          <nb-card-body>
+            <table class="table table-bordered table-sm">
+              <thead>
+                <tr>
+                  <th>Estudiante</th>
+                  <th>Curso</th>
+                  <th>Estado</th>
+                  <th>Fecha</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let item of latestEnrollments">
+                  <td>{{ item.student }}</td>
+                  <td>{{ item.course }}</td>
+                  <td>{{ item.status }}</td>
+                  <td>{{ item.enrolled_at }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </nb-card-body>
+        </nb-card>
+      </div>
+    </div>
+  </nb-card-body>
+</nb-card>

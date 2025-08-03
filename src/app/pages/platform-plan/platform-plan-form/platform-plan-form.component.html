@@ -1,0 +1,139 @@
+<nb-card
+  accent="info"
+  [nbSpinner]="showSpinner"
+  nbSpinnerStatus="primary"
+  nbSpinnerSize="small"
+  [style]="modalStyle"
+  [nbSpinnerMessage]="spinnerMessage | translate"
+>
+  <nb-card-header>
+    <span *ngIf="isCreate">Nuevo precio plan plataforma</span>
+    <span *ngIf="isUpdate">Modificar precio plan plataforma</span>
+    <span *ngIf="isRead">Detalle precio plan plataforma</span>
+
+    <button type="button" class="close" aria-label="Close" (click)="close()" *ngIf="isModal">
+      <span aria-hidden="true">&times;</span>
+    </button>
+
+    <button
+      *ngIf="!isModal"
+      nbButton
+      class="close"
+      type="button"
+      shape="rectangle"
+      outline
+      style="cursor: pointer"
+      [routerLink]="isCreate ? '../list' : '../../list'"
+    >
+      <em class="fa fa-arrow-left"></em>&nbsp;{{ 'button.back' | translate }}
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <form [formGroup]="objForm" (ngSubmit)="onSubmit()">
+      <div class="row">
+        <div class="col-md-6">
+          <label for="iamge"> Imágen </label>
+          <img [src]="platform.image" width="100%" class="shadow-4 rounded-image" />
+          <br />
+          <br />
+          <span style="text-align: center">
+            <p>{{ platform.description }}</p>
+          </span>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label> Nombre plan </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              status="basic"
+              placeholder="Ingrese precio venta"
+              id="plan"
+              [value]="plan.name"
+              readonly
+            />
+          </div>
+
+          <div class="form-group">
+            <label
+              for="price"
+              [ngClass]="{
+                'text-danger': submitted && f.price.errors
+              }"
+            >
+              <span *ngIf="isRequired(f.price)" class="text-danger">{{ isRoot ? '*' : '' }}</span>
+              Precio plan
+            </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              [status]="submitted && f.price.errors ? 'danger' : 'basic'"
+              placeholder="Ingrese precio venta"
+              id="price"
+              formControlName="price"
+              (input)="calculateProfit()"
+              (keypress)="onInputDecimal($event)"
+              [value]="(f.price.errors == '' ? f.price.value : 0) | number : NUMBER_FORMAT : LOCALE"
+              [readonly]="isRoot ? false : true"
+            />
+
+            <div *ngIf="submitted && f.price.errors" class="text-danger">
+              <div *ngIf="f.price.errors.required">Es requerido</div>
+              <div *ngIf="f.price.errors.invalidDecimal">Ingresa un número decimal válido.</div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label> Costo Natvi </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              status="basic"
+              placeholder="Ingrese precio venta"
+              id="price"
+              [value]="platform.cost | number : NUMBER_FORMAT : LOCALE"
+              readonly
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="profit"> Ganancia Mayorista </label>
+            <input
+              type="text"
+              nbInput
+              fullWidth
+              id="profit"
+              [value]="profit | number : NUMBER_FORMAT : LOCALE"
+              readonly="true"
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button nbButton type="button" shape="rectangle" status="basic" outline style="cursor: pointer" (click)="close()">
+      <!-- <em class="fa fa-times"></em>&nbsp;Cancelar -->
+      <nb-icon icon="close-outline" pack="eva"> </nb-icon> {{ 'button.cancel' | translate }}
+    </button>
+
+    <button
+      nbButton
+      *ngIf="isCreate || isUpdate"
+      shape="rectangle"
+      outline
+      status="success"
+      style="cursor: pointer"
+      (click)="onSubmit()"
+    >
+      <!-- <em class="fa fa-hdd"></em>&nbsp;Guardar -->
+      <nb-icon icon="save-outline" pack="eva"> </nb-icon> {{ 'button.save' | translate }}
+    </button>
+  </nb-card-footer>
+</nb-card>

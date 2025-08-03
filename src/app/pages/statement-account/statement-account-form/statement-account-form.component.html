@@ -1,0 +1,69 @@
+<nb-card
+  [nbSpinner]="showSpinner"
+  nbSpinnerStatus="success"
+  nbSpinnerSize="small"
+  [nbSpinnerMessage]="spinnerMessage | translate"
+>
+  <nb-card-header>
+    <span *ngIf="isCreate">Nuevo</span>
+    <span *ngIf="isUpdate">Detalles: {{ record }}</span>
+    <span *ngIf="isRead">Detalles: {{ record }}</span>
+    <button
+      nbTooltip="Volver a listado"
+      nbTooltipPlacement="left"
+      nbTooltipStatus="info"
+      nbButton
+      class="close"
+      type="button"
+      shape="rectangle"
+      status="primary"
+      outline
+      style="cursor: pointer"
+      [routerLink]="isCreate ? '../list' : '../../list'"
+    >
+      <nb-icon icon="arrow-back-outline" pack="eva"> </nb-icon>{{ 'button.back' | translate }}
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <nb-tabset (changeTab)="onChangeTab($event)">
+      <nb-tab tabTitle="Detalles Generales" tabIcon="home-outline" tabId="client-detail">
+        <ngx-customer-statement
+          [customer]="customer"
+          [property]="property"
+          [financial]="financial"
+          [agreements]="agreements"
+        ></ngx-customer-statement>
+      </nb-tab>
+      <nb-tab tabTitle="Estado de cuenta" tabIcon="book-outline" tabId="statement-account">
+        <ngx-account-statement [paymentDetails]="paymentDetails"></ngx-account-statement>
+      </nb-tab>
+      <nb-tab tabTitle="Pagos pendientes" tabIcon="briefcase-outline" tabId="pending-payments">
+        <ngx-pending-statement [pendingPayments]="pendingPayments"></ngx-pending-statement>
+      </nb-tab>
+      <nb-tab tabTitle="Pagos aprobados" tabIcon="briefcase-outline" tabId="approved-payments">
+        <ngx-approved-statement [approvedPayments]="approvedPayments"></ngx-approved-statement>
+      </nb-tab>
+      <nb-tab tabTitle="Pagos rechazados" tabIcon="briefcase-outline" tabId="approved-payments">
+        <ngx-reject-statement [rejectPayments]="rejectPayments"></ngx-reject-statement>
+      </nb-tab>
+    </nb-tabset>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button nbButton type="button" shape="rectangle" status="basic" outline style="cursor: pointer" [routerLink]="'../../list'">
+      <nb-icon icon="close-outline" pack="eva"> </nb-icon> {{ 'button.cancel' | translate }}
+    </button>
+    <button
+      nbButton
+      *ngIf="(isCreate || isUpdate) && btnSaveActivated"
+      shape="rectangle"
+      outline
+      status="success"
+      style="cursor: pointer"
+      (click)="onSubmit()"
+    >
+      <nb-icon icon="save-outline" pack="eva"> </nb-icon> {{ 'button.save' | translate }}
+    </button>
+  </nb-card-footer>
+</nb-card>

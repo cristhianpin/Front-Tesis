@@ -1,0 +1,300 @@
+<nb-card
+  [nbSpinner]="showSpinner"
+  nbSpinnerStatus="success"
+  nbSpinnerSize="small"
+  [nbSpinnerMessage]="spinnerMessage | translate"
+>
+  <nb-card-header>
+    <span *ngIf="isCreate">Nuevo mayorista</span>
+    <span *ngIf="isUpdate">Detalle mayorista: {{ companyNick }}</span>
+    <span *ngIf="isRead">Detalle de mayorista</span>
+    <button
+      nbTooltip="Volver a listado"
+      nbTooltipPlacement="left"
+      nbTooltipStatus="info"
+      nbButton
+      class="close"
+      type="button"
+      shape="rectangle"
+      status="primary"
+      outline
+      style="cursor: pointer"
+      [routerLink]="isCreate ? '../list' : '../../list'"
+    >
+      <!-- <em class="fa fa-arrow-left"></em>&nbsp;{{ 'button.back' | translate }} -->
+      <nb-icon icon="arrow-back-outline" pack="eva"> </nb-icon>{{ 'button.back' | translate }}
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <nb-tabset (changeTab)="onChangeTab($event)">
+      <nb-tab tabTitle="Resumen" tabIcon="home-outline" tabId="home">
+        <br />
+        <form [formGroup]="objForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="code" [ngClass]="{ 'text-danger': submitted && f.code.errors }"> Código </label>
+                <input type="text" class="form-control" id="code" placeholder="code" formControlName="code" readonly="true" />
+                <div *ngIf="submitted && f.code.errors" class="text-danger">
+                  <div *ngIf="f.code.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="balance" [ngClass]="{ 'text-danger': submitted && f.balance.errors }"> Balance </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="balance"
+                  placeholder="balance"
+                  formControlName="balance"
+                  readonly="true"
+                  [value]="f.balance.value | number : NUMBER_FORMAT : LOCALE"
+                />
+                <div *ngIf="submitted && f.balance.errors" class="text-danger">
+                  <div *ngIf="f.balance.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="name" [ngClass]="{ 'text-danger': submitted && f.name.errors }">
+                  <span *ngIf="required('name')" class="text-danger">*</span>
+                  Nombre
+                </label>
+                <input
+                  type="text"
+                  nbInput
+                  fullWidth
+                  [status]="submitted && f.name.errors ? 'danger' : ''"
+                  placeholder="Ingrese nombre"
+                  id="v"
+                  formControlName="name"
+                />
+                <div *ngIf="submitted && f.name.errors" class="text-danger">
+                  <div *ngIf="f.name.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="description" [ngClass]="{ 'text-danger': submitted && f.description.errors }"> Referencia </label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="description"
+                  placeholder="description"
+                  formControlName="description"
+                  readonly="true"
+                />
+                <div *ngIf="submitted && f.description.errors" class="text-danger">
+                  <div *ngIf="f.description.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="phone" [ngClass]="{ 'text-danger': submitted && f.phone.errors }">
+                  <span *ngIf="required('phone')" class="text-danger">*</span>
+                  Teléfono
+                </label>
+                <input
+                  type="text"
+                  nbInput
+                  fullWidth
+                  [status]="submitted && f.phone.errors ? 'danger' : ''"
+                  placeholder="Ingrese teléfono"
+                  id="v"
+                  formControlName="phone"
+                />
+                <div *ngIf="submitted && f.phone.errors" class="text-danger">
+                  <div *ngIf="f.phone.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="nick" [ngClass]="{ 'text-danger': submitted && f.nick.errors }">
+                  <span *ngIf="required('nick')" class="text-danger">*</span>
+                  Nickname
+                </label>
+                <input
+                  type="text"
+                  nbInput
+                  fullWidth
+                  [status]="submitted && f.nick.errors ? 'danger' : ''"
+                  placeholder="Ingrese nickname"
+                  id="v"
+                  formControlName="nick"
+                />
+                <div *ngIf="submitted && f.nick.errors" class="text-danger">
+                  <div *ngIf="f.nick.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <label
+                for="planSlug"
+                [ngClass]="{
+                  'text-danger': submitted && f.planSlug.errors
+                }"
+              >
+                <span *ngIf="required('planSlug')" class="text-danger">*</span>
+                Plan precios
+              </label>
+              <nb-select
+                placeholder="Selecciona plan precios"
+                outline
+                fullWidth
+                [status]="submitted && f.planSlug.errors ? 'danger' : isRoot ? 'primary' : ''"
+                shape="rectangle"
+                id="planSlug"
+                formControlName="planSlug"
+                [disabled]="isRoot ? false : true"
+              >
+                <nb-option *ngFor="let itemPlanSlugEnum of listPlanSlugEnum" [value]="itemPlanSlugEnum">{{
+                  (itemPlanSlugEnum == 'p100' ? 'Plan 100' : itemPlanSlugEnum == 'p300' ? 'Plan 300' : 'Plan 500') | translate
+                }}</nb-option>
+              </nb-select>
+              <!-- {{ itemDuration == '1' ? itemDuration + ' mes' : itemDuration + ' meses' }} -->
+              <div *ngIf="submitted && f.planSlug.errors" class="text-danger">
+                <div *ngIf="f.planSlug.errors.required">Es requerido</div>
+              </div>
+            </div>
+            <div class="col-md-6"></div>
+          </div>
+          <br />
+          <div class="row" *ngIf="isRoot">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="isEnabled" [ngClass]="{ 'text-danger': submitted && f.isEnabled.errors }">
+                  <span *ngIf="required('isEnabled')" class="text-danger">*</span>
+                  Habilitado
+                </label>
+                <div>
+                  <nb-toggle
+                    [(ngModel)]="toggleNgModel"
+                    status="primary"
+                    labelPosition="end"
+                    formControlName="isEnabled"
+                  ></nb-toggle>
+                </div>
+                <div *ngIf="submitted && f.isEnabled.errors" class="text-danger">
+                  <div *ngIf="f.isEnabled.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="isHaveApiKey" [ngClass]="{ 'text-danger': submitted && f.isHaveApiKey.errors }">
+                  <span *ngIf="required('isHaveApiKey')" class="text-danger">*</span>
+                  API
+                </label>
+                <div>
+                  <nb-toggle
+                    [(ngModel)]="toggleNgModelApiKey"
+                    status="primary"
+                    labelPosition="end"
+                    formControlName="isHaveApiKey"
+                  ></nb-toggle>
+                </div>
+                <div *ngIf="submitted && f.isHaveApiKey.errors" class="text-danger">
+                  <div *ngIf="f.isHaveApiKey.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="f.isHaveApiKey.value">
+            <br />
+            <h6><p>Configuración Avanzada</p></h6>
+            <br />
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="apiKey" [ngClass]="{ 'text-danger': submitted && f.apiKey.errors }">
+                    <span *ngIf="required('apiKey')" class="text-danger">*</span>
+                    API-KEY
+                  </label>
+                  <nb-form-field>
+                    <input
+                      nbInput
+                      fullWidth
+                      type="text"
+                      class="form-control"
+                      id="apiKey"
+                      placeholder="apiKey"
+                      formControlName="apiKey"
+                      readonly="true"
+                    />
+
+                    <!-- <button
+                      nbTooltip="Generar"
+                      nbTooltipPlacement="bottom"
+                      nbTooltipStatus="info"
+                      nbSuffix
+                      status="primary"
+                      nbButton
+                      ghost
+                      type="button"
+                      (click)="generateNewApiKey()"
+                    >
+                      <nb-icon icon="sync-outline" pack="eva"> </nb-icon>
+                    </button> -->
+                  </nb-form-field>
+                  <div *ngIf="submitted && f.apiKey.errors" class="text-danger">
+                    <div *ngIf="f.apiKey.errors.required">Es requerido</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6"></div>
+            </div>
+          </div>
+        </form>
+      </nb-tab>
+      <nb-tab (changeTab)="onChangeTab($event)" tabTitle="Plataformas" tabIcon="book-outline" tabId="platform">
+        <br />
+        <nb-alert *ngIf="showAlert" outline="info" closable (close)="onCloseAlert()">
+          <span>Si, 'Costo Mayorista' es <= '0,00' (cero) las plataformas no se mostrarán en la venta.</span>
+        </nb-alert>
+        <ngx-platform-company-list [companyId]="objIdModal"></ngx-platform-company-list>
+      </nb-tab>
+      <nb-tab (changeTab)="onChangeTab($event)" tabTitle="Movimientos" tabIcon="briefcase-outline" tabId="movement">
+        <ngx-movement-list [companyId]="objIdModal" origin="internal"></ngx-movement-list>
+      </nb-tab>
+      <!-- <nb-tab (changeTab)="onChangeTab($event)" tabTitle="Usuarios" tabIcon="person-outline" tabId="user" disabled> </nb-tab>
+      <nb-tab (changeTab)="onChangeTab($event)" tabTitle="PDV" tabIcon="shopping-cart-outline" tabId="pos" disabled> </nb-tab> -->
+      <!-- <nb-tab (changeTab)="onChangeTab($event)" tabTitle="Notas" tabIcon="bookmark-outline" tabId="bookmark" disabled> </nb-tab> -->
+    </nb-tabset>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button nbButton type="button" shape="rectangle" status="basic" outline style="cursor: pointer" [routerLink]="'../../list'">
+      <!-- <em class="fa fa-times"></em>&nbsp;Cancelar -->
+      <nb-icon icon="close-outline" pack="eva"> </nb-icon> {{ 'button.cancel' | translate }}
+    </button>
+
+    <button
+      nbButton
+      *ngIf="(isCreate || isUpdate) && btnSaveActivated"
+      shape="rectangle"
+      outline
+      status="success"
+      style="cursor: pointer"
+      (click)="onSubmit()"
+    >
+      <!-- <em class="fa fa-hdd"></em>&nbsp;Guardar -->
+      <nb-icon icon="save-outline" pack="eva"> </nb-icon> {{ 'button.save' | translate }}
+    </button>
+  </nb-card-footer>
+</nb-card>

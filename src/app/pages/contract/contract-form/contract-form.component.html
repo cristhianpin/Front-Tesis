@@ -1,0 +1,153 @@
+<nb-card
+  [nbSpinner]="showSpinner"
+  nbSpinnerStatus="success"
+  nbSpinnerSize="small"
+  [nbSpinnerMessage]="spinnerMessage | translate"
+>
+  <nb-card-header>
+    <span *ngIf="isCreate">Nuevo</span>
+    <span *ngIf="isUpdate">Detalle: {{ modelName }}</span>
+    <span *ngIf="isRead">Detalle de plataforma</span>
+    <button
+      nbTooltip="Volver a listado"
+      nbTooltipPlacement="left"
+      nbTooltipStatus="info"
+      nbButton
+      class="close"
+      type="button"
+      shape="rectangle"
+      status="primary"
+      outline
+      style="cursor: pointer"
+      [routerLink]="isCreate ? '../list' : '../../list'"
+    >
+      <nb-icon icon="arrow-back-outline" pack="eva"></nb-icon> {{ 'button.back' | translate }}
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <nb-tabset (changeTab)="onChangeTab($event)">
+      <nb-tab tabTitle="Detalles" tabIcon="briefcase-outline" tabId="briefcase">
+        <form [formGroup]="objForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="course_id" [ngClass]="{ 'text-danger': submitted && f.course_id.errors }">
+                  <span *ngIf="required('course_id')" class="text-danger">*</span>
+                  Cursos
+                </label>
+                <nb-select
+                  placeholder="Selecciona un curso"
+                  outline
+                  fullWidth
+                  [status]="submitted && f.course_id.errors ? 'danger' : 'primary'"
+                  shape="rectangle"
+                  id="course_id"
+                  formControlName="course_id"
+                >
+                  <nb-option *ngFor="let item of courses" [value]="item.id"> {{ item.name }}</nb-option>
+                </nb-select>
+                <div *ngIf="submitted && f.course_id.errors" class="text-danger">
+                  <div *ngIf="f.course_id.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="user_detail_id" [ngClass]="{ 'text-danger': submitted && f.user_detail_id.errors }">
+                  <span *ngIf="required('user_detail_id')" class="text-danger">*</span>
+                  Estudiante
+                </label>
+                <nb-select
+                  placeholder="Selecciona un estudiante"
+                  outline
+                  fullWidth
+                  [status]="submitted && f.user_detail_id.errors ? 'danger' : 'primary'"
+                  shape="rectangle"
+                  id="user_detail_id"
+                  formControlName="user_detail_id"
+                >
+                  <nb-option *ngFor="let item of students" [value]="item.id"> {{ item.first_name }} {{ item.last_name }}</nb-option>
+                </nb-select>
+                <div *ngIf="submitted && f.user_detail_id.errors" class="text-danger">
+                  <div *ngIf="f.user_detail_id.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="enrolled_at" [ngClass]="{ 'text-danger': submitted && f.enrolled_at.errors }">
+                  <span *ngIf="required('enrolled_at')" class="text-danger">*</span>
+                  Fecha de matriculación
+                </label>
+                <input
+                  type="date"
+                  nbInput
+                  fullWidth
+                  id="enrolled_at"
+                  formControlName="enrolled_at"
+                  placeholder="YYYY-MM-DD"
+                  [status]="submitted && f.enrolled_at.errors ? 'danger' : 'basic'"
+                />
+                <div *ngIf="submitted && f.enrolled_at.errors" class="text-danger">
+                  <div *ngIf="f.enrolled_at.errors.required">Es requerida</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="contract_path" [ngClass]="{ 'text-danger': submitted && f.contract_path.errors }">
+                  <span *ngIf="required('contract_path')" class="text-danger">*</span>
+                  Subir el contrato:
+                </label>
+                <input
+                  type="file"
+                  class="form-control-file"
+                  id="contract_path"
+                  accept="application/pdf"
+                  (change)="onFileSelected($event)"
+                />
+                <small class="text-muted d-block mt-1">
+                  Formato permitido: <strong>PDF</strong>
+                </small>
+                <div *ngIf="submitted && f.contract_path.errors" class="text-danger mt-1">
+                  Este campo es obligatorio.
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </nb-tab>
+    </nb-tabset>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button
+      nbButton
+      type="button"
+      shape="rectangle"
+      status="basic"
+      outline
+      style="cursor: pointer"
+      [routerLink]="isCreate ? '../list' : '../../list'"
+    >
+      <nb-icon icon="close-outline" pack="eva"></nb-icon> {{ 'button.cancel' | translate }}
+    </button>
+
+    <button
+      nbButton
+      *ngIf="isCreate || isUpdate"
+      shape="rectangle"
+      outline
+      status="success"
+      style="cursor: pointer"
+      (click)="onSubmit()"
+    >
+      <nb-icon icon="save-outline" pack="eva"></nb-icon> {{ 'button.save' | translate }}
+    </button>
+  </nb-card-footer>
+</nb-card>

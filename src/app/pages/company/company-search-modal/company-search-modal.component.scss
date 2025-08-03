@@ -1,0 +1,24 @@
+@import '~bootstrap/scss/mixins/breakpoints';
+@import '~@nebular/theme/styles/global/breakpoints';
+@import '../../../@theme/styles/themes';
+
+@include nb-install-component() {
+  nb-card {
+    // width: 85em;
+    // height: 97%;
+    max-width: 85em;
+    // max-height: 97%;
+  }
+
+  @include media-breakpoint-down(lg) {
+    button {
+      padding: 0.8rem;
+    }
+  }
+
+  @include media-breakpoint-down(is) {
+    button {
+      padding: 0.75rem;
+    }
+  }
+}

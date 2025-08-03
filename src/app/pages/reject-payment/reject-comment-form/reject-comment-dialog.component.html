@@ -1,0 +1,49 @@
+<nb-card
+  accent="primary"
+  [nbSpinner]="loading"
+  nbSpinnerStatus="primary"
+  nbSpinnerSize="small"
+  style="width: 600px; max-width: 90vw; height: auto; border-radius: 10px;"
+>
+  <nb-card-header class="modal-header d-flex justify-content-between align-items-center" style="border-bottom: 1px solid #ccc;">
+    <strong class="text-primary">Motivos de Rechazo</strong>
+    <button type="button" class="close" aria-label="Close" (click)="onNoClick()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body" style="padding: 20px;">
+    <div class="container">
+      <p class="mb-3" style="font-weight: bold; font-size: 1.1rem; color: #333;">Comentarios:</p>
+
+      <div *ngIf="comments.length > 0; else noComments">
+        <nb-list style="border-radius: 8px; background-color: #f8f9fa; padding: 10px;">
+          <nb-list-item *ngFor="let comment of comments" style="display: flex; align-items: flex-start; padding: 12px; border-bottom: 1px solid #ddd;">
+            <nb-icon icon="message-circle" pack="eva" status="primary" style="font-size: 1.5rem; margin-right: 10px;"></nb-icon>
+            <div>
+              <p class="comment-text" style="margin: 0; font-size: 1rem; color: #333;">
+                {{ comment.comments }}
+              </p>
+              <small class="comment-date" style="color: #777; font-size: 0.85rem;">
+                {{ comment.created_at | date: 'yyyy-MM-dd HH:mm:ss' }}
+              </small>
+            </div>
+          </nb-list-item>
+        </nb-list>
+      </div>
+
+      <ng-template #noComments>
+        <div class="text-center" style="padding: 20px;">
+          <nb-icon icon="info-outline" pack="eva" status="warning" style="font-size: 2rem;"></nb-icon>
+          <p class="no-comments" style="color: #888; font-size: 1rem; margin-top: 10px;">No hay comentarios disponibles.</p>
+        </div>
+      </ng-template>
+    </div>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer d-flex justify-content-end" style="border-top: 1px solid #ccc; padding: 15px;">
+    <button nbButton shape="rectangle" status="danger" outline (click)="onNoClick()" style="border-radius: 5px; font-weight: bold;">
+      <nb-icon icon="close-outline" pack="eva"></nb-icon>&nbsp;Cancelar
+    </button>
+  </nb-card-footer>
+</nb-card>

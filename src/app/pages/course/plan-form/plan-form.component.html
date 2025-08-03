@@ -1,0 +1,87 @@
+<form [formGroup]="objForm" (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="title" [ngClass]="{ 'text-danger': submitted && f.title.errors }">
+          <span *ngIf="required('title')" class="text-danger">*</span>
+          Título del módulo
+        </label>
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          id="title"
+          formControlName="title"
+          placeholder="Ej: 1.1. Técnicas de caminata"
+          [status]="submitted && f.title.errors ? 'danger' : 'basic'"
+        />
+        <div *ngIf="submitted && f.title.errors" class="text-danger">
+          <div *ngIf="f.title.errors.required">Es requerido</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="description" [ngClass]="{ 'text-danger': submitted && f.description.errors }">
+          <span *ngIf="required('description')" class="text-danger">*</span>
+          Descripción
+        </label>
+        <input
+          type="text"
+          nbInput
+          fullWidth
+          id="description"
+          formControlName="description"
+          placeholder="Ej: Aprende a caminar correctamente en pasarela"
+          [status]="submitted && f.description.errors ? 'danger' : 'basic'"
+        />
+        <div *ngIf="submitted && f.description.errors" class="text-danger">
+          <div *ngIf="f.description.errors.required">Es requerida</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-3">
+    <div class="col-md-12">
+      <button nbButton status="success" class="mr-2" [disabled]="objForm.invalid">
+        <nb-icon icon="plus-outline" pack="eva"></nb-icon>
+        {{ selectedPlanId ? 'Actualizar' : 'Agregar' }}
+      </button>
+
+      <button *ngIf="selectedPlanId" nbButton status="basic" outline (click)="cancelEdit()" type="button">Cancelar</button>
+    </div>
+  </div>
+</form>
+
+<hr />
+
+<div class="mt-3">
+  <h6>Listado de módulos:</h6>
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th style="width: 30%">Título</th>
+        <th style="width: 50%">Descripción</th>
+        <th style="width: 20%" class="text-center">Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let plan of studyPlans">
+        <td>
+          <b>{{ plan.title }}</b>
+        </td>
+        <td>{{ plan.description }}</td>
+        <td class="text-center">
+          <button nbButton size="tiny" status="info" (click)="editPlan(plan)" class="me-1 mr-2">
+            <nb-icon icon="edit-outline" pack="eva"></nb-icon>
+          </button>
+          <button nbButton size="tiny" status="danger" (click)="deletePlan(plan.id)">
+            <nb-icon icon="trash-2-outline" pack="eva"></nb-icon>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

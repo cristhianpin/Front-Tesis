@@ -1,0 +1,4 @@
+export enum WorkflowTypeEnum {
+  WORKFLOW_DIAGRAM = 'WORKFLOW_DIAGRAM',
+  DECISION_TABLE = 'DECISION_TABLE',
+}

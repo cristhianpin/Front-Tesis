@@ -1,0 +1,183 @@
+<nb-card>
+  <nb-card-header class="modal-header">
+    <span>Busca y selecciona un mayorista</span>
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </nb-card-header>
+  <nb-card-body class="modal-body">
+    <div class="row">
+      <div class="col-md-12">
+        <p-table
+          #dt
+          id="companySearch"
+          [columns]="selectedCols"
+          [value]="objs"
+          [paginator]="true"
+          [rows]="3"
+          paginatorPosition="top"
+          showCurrentPageReport="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+          [(selection)]="selectedCompany"
+          [loading]="showSpinner"
+          dataKey="id"
+          autoLayout="true"
+          resetPageOnSort="true"
+          [rowHover]="true"
+          sortMode="multiple"
+          [totalRecords]="totalRecords"
+          selectionMode="single"
+        >
+          <ng-template pTemplate="header" let-columns>
+            <tr>
+              <th style="width: 3em"></th>
+              <th
+                *ngFor="let col of columns"
+                pResizableColumn
+                pReorderableColumn
+                [pSortableColumn]="col.field"
+                [style.width]="col.width"
+              >
+                {{ col.header | translate }}
+                <p-sortIcon [field]="col.field"></p-sortIcon>
+              </th>
+            </tr>
+            <tr>
+              <th style="width: 3em"></th>
+              <th *ngFor="let col of columns" [ngSwitch]="col.field">
+                <!-- <nb-select
+                  *ngSwitchCase="'country'"
+                  id="entidad"
+                  placeholder="Todo"
+                  size="small"
+                  fullWidth
+                  outline
+                  shape="rectangle"
+                  (selectedChange)="dt.filter($event, col.field, 'equals')"
+                >
+                  <nb-option [value]="''">Todo</nb-option>
+                  <nb-option *ngFor="let country of countries" [value]="country.name">{{ country.name }}</nb-option>
+                </nb-select> -->
+
+                <input
+                  *ngSwitchDefault
+                  nbInput
+                  fieldSize="small"
+                  fullWidth
+                  [id]="col.field"
+                  (change)="dt.filter($event.target.value, col.field, 'contains')"
+                />
+              </th>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr [pSelectableRow]="rowData">
+              <td>
+                <p-tableRadioButton [value]="rowData"></p-tableRadioButton>
+              </td>
+              <td *ngFor="let col of columns; let i = index" class="ui-resizable-column">
+                <div *ngIf="col.field != 'isEnabled'">
+                  {{
+                    col.type === 'date'
+                      ? (rowData[col.field] | date : DATE_FORMAT_LONG)
+                      : col.type === 'numeric'
+                      ? (rowData[col.field] | number : NUMBER_FORMAT : LOCALE)
+                      : (rowData[col.field] | translate)
+                  }}
+                </div>
+
+                <div *ngIf="col.field === 'isEnabled'; then enabledControl">loading template</div>
+                <ng-template #enabledControl>
+                  <nb-toggle status="primary" [checked]="rowData.isEnabled" disabled></nb-toggle>
+                </ng-template>
+              </td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="paginatorleft" let-state>
+            <nb-form-field *ngIf="totalRecords > 0">
+              <input
+                type="text"
+                nbInput
+                nbTooltip="Ingresar búsqueda"
+                nbTooltipPlacement="bottom"
+                nbTooltipStatus="info"
+                fieldSize="small"
+                [(ngModel)]="filterFieldGlobal"
+                placeholder="Busqueda"
+                shape="rectangle"
+                status="info"
+                (change)="globalFilterBtnDisabled = false; dt.filterGlobal($event.target.value, 'contains')"
+              />
+              <button
+                nbSuffix
+                nbButton
+                size="small"
+                [nbTooltip]="globalFilterBtnDisabled ? 'Buscar' : 'Limpiar'"
+                nbTooltipPlacement="bottom"
+                nbTooltipStatus="info"
+                style="cursor: pointer"
+                ghost
+                (click)="
+                  filterFieldGlobal = null; dt.filterGlobal($event.target.value, 'contains'); globalFilterBtnDisabled = true
+                "
+                [disabled]="globalFilterBtnDisabled"
+              >
+                <nb-icon
+                  [icon]="globalFilterBtnDisabled ? 'search-outline' : 'close-outline'"
+                  pack="eva"
+                  attr.aria-label="clear table"
+                >
+                </nb-icon>
+              </button>
+            </nb-form-field>
+          </ng-template>
+
+          <ng-template pTemplate="paginatorright" let-state>
+            <button
+              *ngIf="totalRecords > 0"
+              nbTooltip="Actualizar tabla"
+              nbTooltipPlacement="bottom"
+              nbTooltipStatus="info"
+              nbButton
+              ghost
+              (click)="find(true)"
+            >
+              <nb-icon icon="refresh-outline"></nb-icon>
+            </button>
+          </ng-template>
+          <ng-template pTemplate="loadingbody" let-columns="columns">
+            <tr>
+              <td>{{ 'spinner.loading' | translate }}</td>
+            </tr>
+          </ng-template>
+          <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+              <td [attr.colspan]="columns.length + 1">{{ 'primeng.emptyMessage' | translate }}</td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </div>
+    </div>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <!-- <button nbButton shape="rectangle" outline size="small" style="cursor: pointer" (click)="close()">
+      <i class="fa fa-times"></i>&nbsp;Cerrar
+    </button> -->
+    <button nbButton type="button" shape="rectangle" status="basic" outline style="cursor: pointer" (click)="close()">
+      <!-- <em class="fa fa-times"></em>&nbsp;Cancelar -->
+      <nb-icon icon="close-outline" pack="eva"> </nb-icon> {{ 'button.cancel' | translate }}
+    </button>
+    <button
+      nbButton
+      status="success"
+      shape="rectangle"
+      outline
+      style="cursor: pointer"
+      (click)="selectRow()"
+      [disabled]="!selectedCompany"
+    >
+      <i class="fa fa-check"></i>&nbsp;Seleccionar
+    </button>
+  </nb-card-footer>
+</nb-card>

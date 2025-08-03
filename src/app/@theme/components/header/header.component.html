@@ -1,0 +1,57 @@
+<div class="header-container d-flex align-items-center justify-content-between">
+  <div class="logo-container">
+    <a (click)="toggleSidebar()" href="#" class="sidebar-toggle btn btn-link">
+      <nb-icon icon="menu-2-outline"></nb-icon>
+    </a>
+    <!-- <a class="logo" href="#" (click)="navigateHome()">Natvi <span>Streaming</span></a> -->
+    <a>MV MODELS</a>
+  </div>
+
+  <!-- <nb-select [selected]="currentTheme" (selectedChange)="changeTheme($event)" status="primary">
+    <nb-option *ngFor="let theme of themes" [value]="theme.value"> {{ theme.name }}</nb-option>
+  </nb-select> -->
+</div>
+
+<div class="header-container d-flex align-items-center justify-content-between">
+  <nb-actions>
+    <!-- <nb-action class="control-item">
+      <nb-search type="rotate-layout"></nb-search>
+    </nb-action> -->
+<!--    <nb-action>-->
+<!--      <button-->
+<!--        nbButton-->
+<!--        shape="rectangle"-->
+<!--        outline-->
+<!--        [status]="companyBalance > 0 ? 'basic' : 'danger'"-->
+<!--        style="cursor: pointer"-->
+<!--        (click)="toggleUibar()"-->
+<!--        class="mr-2"-->
+<!--      >-->
+<!--        <nb-icon icon="heart-outline" pack="eva"></nb-icon>{{ companyBalance }}-->
+<!--      </button>-->
+<!--    </nb-action>-->
+    <!-- <nb-action class="control-item" icon="email-outline">emailll</nb-action> -->
+<!--    <nb-action class="control-item" icon="settings-2-outline" (click)="toggleUibar()"></nb-action>-->
+<!--    <nb-action-->
+<!--      class="control-item"-->
+<!--      [nbContextMenu]="notificationMenu"-->
+<!--      nbContextMenuTag="notifMenu"-->
+<!--      icon="bell-outline"-->
+<!--      badgeDot="true"-->
+<!--      badgePosition="top right"-->
+<!--      badgeStatus="warning"-->
+<!--    ></nb-action>-->
+    <!-- <nb-action class="control-item" [nbContextMenu]="languageMenu" nbContextMenuTag="langMenu" icon="globe-outline"></nb-action> -->
+    <nb-action class="user-action" *nbIsGranted="['view', 'user']">
+      <nb-user
+        [nbContextMenu]="userMenu"
+        nbContextMenuTag="menu"
+        [onlyPicture]="userPictureOnly"
+        [name]="currentUser?.details ? currentUser.details.first_name + ' ' + currentUser.details.last_name : ''"
+        [picture]="currentUser?.picture"
+        [title]="getRoleLabel(role)"
+      >
+      </nb-user>
+    </nb-action>
+  </nb-actions>
+</div>

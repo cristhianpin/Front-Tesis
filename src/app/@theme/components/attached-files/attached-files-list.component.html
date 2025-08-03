@@ -1,0 +1,60 @@
+<div class="row">
+  <div class="col-md-12">
+    <p-table
+      #dt
+      id="attached-files"
+      [columns]="cols"
+      [value]="objs"
+      [resizableColumns]="false"
+      [reorderableColumns]="false"
+      paginatorDropdownAppendTo="body"
+      [paginator]="true"
+      [rowHover]="true"
+      paginatorPosition="top"
+      [rows]="10"
+      dataKey="id"
+      autoLayout="true"
+      [loading]="showSpinner"
+      resetPageOnSort="true"
+      exportFilename="attached-filesTable"
+      showCurrentPageReport="true"
+      currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords} registros"
+    >
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th *ngFor="let col of columns" pResizableColumn pReorderableColumn [pSortableColumn]="col.field">
+            {{ col.header }}
+            <p-sortIcon [field]="col.field" *ngIf="col.sortable"></p-sortIcon>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr>
+          <td *ngFor="let col of columns; let i = index" class="ui-resizable-column">
+            <div *ngIf="col.field === 'hasAttachedFile'; then hasAttachedFile">loading template</div>
+            <div *ngIf="col.field != 'hasAttachedFile'">
+              {{ col.type === 'date' ? (rowData[col.field] | date : DATE_FORMAT_LONG) : (rowData[col.field] | translate) }}
+            </div>
+            <ng-template #hasAttachedFile>
+              <a (click)="onFileDownload(rowData.id)" style="cursor: pointer" class="navigation"
+                ><i class="fas fa-regular fa-download"></i
+              ></a>
+            </ng-template>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorleft" let-state></ng-template>
+      <ng-template pTemplate="paginatorright" let-state></ng-template>
+      <ng-template pTemplate="loadingbody" let-columns="columns">
+        <tr>
+          <td>{{ 'spinner.loading' | translate }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td [attr.colspan]="columns.length">{{ 'primeng.emptyMessage' | translate }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

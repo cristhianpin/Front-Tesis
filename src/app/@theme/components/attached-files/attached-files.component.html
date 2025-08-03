@@ -1,0 +1,97 @@
+<nb-card [accent]="modalSeverity" [nbSpinner]="showSpinner" nbSpinnerStatus="success" nbSpinnerSize="small"
+  [nbSpinnerMessage]="spinnerMessage | translate">
+  <nb-card-header class="modal-header">
+    <span>Documentos adjunto</span>
+
+    <button type="button" class="close" aria-label="Close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <!--
+    <div class="row">
+      <div class="col-md-12">
+        <nb-alert outline="warning"> Debe seleccionar un Tipo de documento y luego adjuntar el archivo </nb-alert>
+      </div>
+    </div>
+    -->
+
+    <!--
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="attachmentType"> Tipo de documento </label>
+          <div>
+            <nb-select
+              placeholder="Selecciona un tipo de documento"
+              outline
+              fullWidth
+              [status]="'primary'"
+              shape="rectangle"
+              id="attachmentType"
+              [(selected)]="selectedTypeDocument"
+            >
+              <nb-option *ngFor="let attachmentType of attachmentTypes" [value]="attachmentType">
+                {{ '(' + attachmentType.code + ') ' + attachmentType.name }}
+              </nb-option>
+            </nb-select>
+          </div>
+        </div>
+      </div>
+    </div>
+    -->
+
+    <div class="row">
+      <div class="col-md-12">
+        <p-fileUpload #fu name="file" [files]="files" customUpload="true" [auto]="false" (onSelect)="onSelect($event)"
+          (onRemove)="onRemove($event)" (onClear)="onClear($event)" (uploadHandler)="onFileUpload($event, fu)"
+          multiple="multiple" accept="application/pdf" invalidFileTypeMessageSummary="{0}: Tipo de archivo no valido,"
+          chooseLabel="Seleccionar" uploadLabel="Subir" cancelLabel="Cancelar" [auto]="true" [showUploadButton]="false"
+          withCredentials="true">
+          <ng-template let-file pTemplate="file">
+            <div class="p-fileupload-row" style="font-size: 14px">
+              <div style="width: 270px; word-break: break-all">{{ file.name }}</div>
+              <!--
+              <div style="width: 240px; word-break: break-all">{{ file.typeDoc.name }}</div>
+              -->
+              <div style="width: 280px; word-break: break-all">
+                <nb-select placeholder="Tipo de documento" outline fullWidth [status]="'primary'"
+                  shape="rectangle" id="attachmentType" [(selected)]="file.typeDoc">
+                  <nb-option *ngFor="let attachmentType of attachmentTypes" [value]="attachmentType">
+                    {{ '(' + attachmentType.code + ') ' + attachmentType.name }}
+                  </nb-option>
+                </nb-select>
+              </div>
+              <div>{{ getSizeInMegaBytes(file) | number : '1.2-2' }} MB</div>
+              <div style="width: 50px;">
+                <button icon="pi pi-times" pButton type="button" (click)="removeFile(file, fu)"></button>
+              </div>
+            </div>
+          </ng-template>
+          <ng-template pTemplate="content">
+            <div class="span12">
+              <br />
+              <div class="row">
+                <div class="col" style="text-align: center">
+                  <strong>Arrastre y suelte el archivo</strong>
+                </div>
+              </div>
+              <br />
+            </div>
+          </ng-template>
+        </p-fileUpload>
+      </div>
+    </div>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button nbButton type="button" shape="rectangle" outline size="small" style="cursor: pointer" (click)="close()">
+      <em class="fa fa-times"></em>&nbsp;Cerrar
+    </button>
+    <button nbButton shape="rectangle" outline size="small" status="success" style="cursor: pointer"
+      (click)="onSubmit()">
+      <em class="fa fa-hdd"></em>&nbsp;Continuar
+    </button>
+  </nb-card-footer>
+</nb-card>

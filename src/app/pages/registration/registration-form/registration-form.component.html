@@ -1,0 +1,201 @@
+<nb-card
+  [nbSpinner]="showSpinner"
+  nbSpinnerStatus="success"
+  nbSpinnerSize="small"
+  [nbSpinnerMessage]="spinnerMessage | translate"
+>
+  <nb-card-header>
+    <span *ngIf="isCreate">Nueva Matrícula</span>
+    <span *ngIf="isUpdate || isRead">Detalle de Matrícula</span>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <nb-alert status="info" accent="info" outline>
+      <strong>Bienvenido(a) a MV Models</strong><br />
+      Por favor, selecciona tus intereses relacionados con el modelaje. Esta información nos permite recomendarte los cursos más
+      adecuados para ti. Recuerda que ofrecemos formación integral en pasarela, fotografía, etiqueta, actuación y más.
+    </nb-alert>
+    <form [formGroup]="objForm" (ngSubmit)="onSubmit()">
+      <!-- Intereses -->
+      <div class="row mt-2">
+        <div class="col-md-12">
+          <label>Selecciona tus intereses:</label>
+          <div class="row">
+            <div class="col-md-4" *ngFor="let interest of interestOptions">
+              <nb-checkbox formControlName="{{ interest.key }}">
+                {{ interest.label }}
+              </nb-checkbox>
+            </div>
+          </div>
+          <button nbButton status="info" size="small" class="mt-2" type="button" (click)="refreshRecommendations()">
+            <nb-icon icon="refresh-outline" pack="eva"></nb-icon> Recomendar cursos
+          </button>
+        </div>
+      </div>
+
+      <!-- Cursos recomendados -->
+      <div class="row mt-4">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label>Cursos recomendados:</label>
+            <ul class="list-group">
+              <li class="list-group-item" *ngFor="let course of recommended_courses">
+                {{ course.name }}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Curso a matricular -->
+      <div class="row">
+        <div class="col-md-12">
+          <div class="form-group">
+            <label for="course_id" [ngClass]="{ 'text-danger': submitted && f.course_id.errors }">
+              <span *ngIf="required('course_id')" class="text-danger">*</span>
+              Seleccione el curso al cual desea matricularse:
+            </label>
+            <nb-select
+              fullWidth
+              id="course_id"
+              placeholder="Seleccione un curso disponible"
+              formControlName="course_id"
+              [status]="submitted && f.course_id.errors ? 'danger' : 'basic'"
+            >
+              <nb-option *ngFor="let course of allCourses" [value]="course.id">{{ course.name }}</nb-option>
+            </nb-select>
+            <div *ngIf="submitted && f.course_id.errors" class="text-danger">
+              <div *ngIf="f.course_id.errors.required">Debe seleccionar un curso</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <nb-alert status="warning" outline>
+        <strong>Requisitos para completar la matrícula:</strong><br />
+        - Copia de cédula o pasaporte.<br />
+        - Fotografía tamaño carnet.<br />
+        - Pago de inscripción o primera mensualidad.<br />
+        - Firma del contrato de servicios.<br />
+        - Consentimiento informado (menores de edad).
+      </nb-alert>
+      <!-- Datos personales -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="id_number" [ngClass]="{ 'text-danger': submitted && f.id_number.errors }">
+              <span *ngIf="required('id_number')" class="text-danger">*</span>
+              Cédula:
+            </label>
+            <input
+              nbInput
+              fullWidth
+              id="id_number"
+              type="text"
+              placeholder="Número de cédula"
+              formControlName="id_number"
+              [status]="submitted && f.id_number.errors ? 'danger' : 'basic'"
+            />
+            <div *ngIf="submitted && f.id_number.errors" class="text-danger mt-1">
+              <div *ngIf="f.id_number.errors.required">La cédula es obligatoria.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="birth_date" [ngClass]="{ 'text-danger': submitted && f.birth_date.errors }">
+              <span *ngIf="required('birth_date')" class="text-danger">*</span>
+              Fecha de nacimiento:
+            </label>
+            <input
+              nbInput
+              fullWidth
+              id="birth_date"
+              type="date"
+              formControlName="birth_date"
+              [status]="submitted && f.birth_date.errors ? 'danger' : 'basic'"
+            />
+            <div *ngIf="submitted && f.birth_date.errors" class="text-danger mt-1">
+              <div *ngIf="f.birth_date.errors.required">La fecha de nacimiento es obligatoria.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="form-group">
+            <label for="address" [ngClass]="{ 'text-danger': submitted && f.address.errors }">
+              <span *ngIf="required('address')" class="text-danger">*</span>
+              Dirección:
+            </label>
+            <input
+              nbInput
+              fullWidth
+              id="address"
+              type="text"
+              placeholder="Dirección"
+              formControlName="address"
+              [status]="submitted && f.address.errors ? 'danger' : 'basic'"
+            />
+            <div *ngIf="submitted && f.address.errors" class="text-danger mt-1">
+              <div *ngIf="f.address.errors.required">La dirección es obligatoria.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subida de archivos -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="identification_path" [ngClass]="{ 'text-danger': submitted && f.identification_path.errors }">
+              <span *ngIf="required('identification_path')" class="text-danger">*</span>
+              Subir copia de cédula:
+            </label>
+            <input
+              type="file"
+              class="form-control-file"
+              id="identification_path"
+              (change)="onFileChange($event, 'identification_path')"
+              accept="application/pdf"
+            />
+            <small class="text-muted d-block mt-1">
+              Formato permitido: <strong>PDF</strong>
+            </small>
+            <div *ngIf="submitted && f.identification_path.errors" class="text-danger mt-1">
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="photo_path" [ngClass]="{ 'text-danger': submitted && f.photo_path.errors }">
+              <span *ngIf="required('photo_path')" class="text-danger">*</span>
+              Subir fotografía:
+            </label>
+            <input
+              type="file"
+              class="form-control-file"
+              id="photo_path"
+              (change)="onFileChange($event, 'photo_path')"
+              accept="image/jpeg,image/png"
+            />
+            <small class="text-muted d-block mt-1">
+              Formatos permitidos: <strong>JPG, JPEG, PNG</strong>
+            </small>
+            <div *ngIf="submitted && f.photo_path.errors" class="text-danger mt-1">
+              Este campo es obligatorio.
+            </div>
+          </div>
+        </div>
+      </div>
+      <nb-card-footer class="modal-footer">
+        <button nbButton shape="rectangle" outline status="success" style="cursor: pointer" type="submit">
+          <nb-icon icon="save-outline" pack="eva"></nb-icon> {{ 'button.save' | translate }}
+        </button>
+      </nb-card-footer>
+    </form>
+  </nb-card-body>
+
+
+</nb-card>

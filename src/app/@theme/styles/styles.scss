@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&display=swap');
+
+// themes - our custom or/and out of the box themes
+@import 'themes';
+
+// framework component themes (styles tied to theme variables)
+@import '~@nebular/theme/styles/globals';
+@import '~@nebular/auth/styles/globals';
+
+@import '~bootstrap/scss/functions';
+@import '~bootstrap/scss/variables';
+@import '~bootstrap/scss/mixins';
+@import '~bootstrap/scss/grid';
+
+// loading progress bar theme
+@import './pace.theme';
+
+@import './layout';
+@import './overrides';
+
+// install the framework and custom global styles
+@include nb-install() {
+  // framework global styles
+  @include nb-theme-global();
+  @include nb-auth-global();
+
+  @include ngx-layout();
+  // loading progress bar
+  @include ngx-pace-theme();
+
+  @include nb-overrides();
+
+  .tool-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .tool-bar > * {
+    margin: 0.5rem;
+  }
+
+  .my-footer {
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+  }
+
+  .my-footer > nav {
+    padding: 0.2rem !important;
+  }
+
+  .status-badge {
+    border-radius: 5px;
+    padding: 0.25em 0.5rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+  }
+
+  .status-badge.status-approved {
+    background-color: #c8e6c9;
+    color: #256029;
+  }
+
+  .status-badge.status-draft {
+    background-color: rgb(237, 241, 247);
+    color: rgb(34, 43, 69);
+  }
+
+  .status-badge.status-proccessing {
+    background-color: #ffd8b2;
+    color: #805b36;
+  }
+
+  .status-badge.status-closed {
+    background-color: #feedaf;
+    color: #8a5340;
+  }
+
+  .status-badge.status-released {
+    background-color: #c8e6c9;
+    color: #256029;
+  }
+
+  .status-badge.status-rejected {
+    background-color: #ffcdd2;
+    color: #c63737;
+  }
+
+  .status-badge.status-new {
+    background-color: #eccfff;
+    color: #694382;
+  }
+
+  .status-badge.status-pending {
+    background-color: #eccfff;
+    color: #694382;
+  }
+
+  .status-badge.status-created {
+    background-color: #b3e5fc;
+    color: #23547b;
+  }
+
+  .diagram-parent {
+    height: 400px;
+    border: solid 3px #eee;
+    position: relative;
+  }
+
+  .import-error {
+    color: red;
+    padding: 20px;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .diagram-container {
+    height: 100%;
+    width: 100%;
+  }
+
+  .task-in-process:not(.djs-connection) .djs-visual > :nth-child(1) {
+    fill: #00d68f !important; /* color elements as green */
+  }
+
+  ngx-otp-input {
+    .my-super-filled-class {
+      // background: rgba(wheat, 0.75);
+      background: #d5ffb8;
+    }
+
+    .my-super-success-class {
+      background: #d5ffb8;
+    }
+
+    .my-super-error-class {
+      background: #ffb2b2;
+    }
+  }
+}
+
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';

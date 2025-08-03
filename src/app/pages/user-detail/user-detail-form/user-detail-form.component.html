@@ -1,0 +1,223 @@
+<nb-card
+  [nbSpinner]="showSpinner"
+  nbSpinnerStatus="success"
+  nbSpinnerSize="small"
+  [nbSpinnerMessage]="spinnerMessage | translate"
+>
+  <nb-card-header>
+    <span *ngIf="isCreate">Nuevo</span>
+    <span *ngIf="isUpdate">Detalle: {{ modelName }}</span>
+    <span *ngIf="isRead">Detalle de plataforma</span>
+    <button
+      nbTooltip="Volver a listado"
+      nbTooltipPlacement="left"
+      nbTooltipStatus="info"
+      nbButton
+      class="close"
+      type="button"
+      shape="rectangle"
+      status="primary"
+      outline
+      style="cursor: pointer"
+      [routerLink]="isCreate ? '../list' : '../../list'"
+    >
+      <nb-icon icon="arrow-back-outline" pack="eva"> </nb-icon>{{ 'button.back' | translate }}
+    </button>
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <nb-tabset (changeTab)="onChangeTab($event)">
+      <nb-tab tabTitle="Detalles" tabIcon="briefcase-outline" tabId="briefcase">
+        <form [formGroup]="objForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="firstName" [ngClass]="{ 'text-danger': submitted && f.firstName.errors }">
+                  <span *ngIf="required('firstName')" class="text-danger">*</span>
+                  Nombres
+                </label>
+                <input
+                  type="text"
+                  nbInput
+                  fullWidth
+                  [status]="submitted && f.firstName.errors ? 'danger' : 'basic'"
+                  placeholder="Ingrese los nombres"
+                  id="firstName"
+                  formControlName="firstName"
+                />
+                <div *ngIf="submitted && f.firstName.errors" class="text-danger">
+                  <div *ngIf="f.firstName.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="lastName" [ngClass]="{ 'text-danger': submitted && f.lastName.errors }">
+                  <span *ngIf="required('lastName')" class="text-danger">*</span>
+                  Apellidos
+                </label>
+                <input
+                  type="text"
+                  nbInput
+                  fullWidth
+                  [status]="submitted && f.lastName.errors ? 'danger' : 'basic'"
+                  placeholder="Ingrese los apellidos"
+                  id="lastName"
+                  formControlName="lastName"
+                />
+                <div *ngIf="submitted && f.lastName.errors" class="text-danger">
+                  <div *ngIf="f.lastName.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <label for="roleName">
+                <span *ngIf="required('roleName')" class="text-danger">*</span>
+                Roles
+              </label>
+              <nb-select
+                placeholder="Selecciona un rol"
+                outline
+                fullWidth
+                [status]="submitted && f.roleName.errors ? 'danger' : 'primary'"
+                shape="rectangle"
+                id="roleName"
+                formControlName="roleName"
+              >
+                <nb-option *ngFor="let item of roles" [value]="item.name">{{ getRoleLabel(item.name) | translate }}</nb-option>
+              </nb-select>
+              <div *ngIf="submitted && f.roleName.errors" class="text-danger">
+                <div *ngIf="f.roleName.errors.required">Es requerido</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <label for="email">
+                <span *ngIf="required('email')" class="text-danger">*</span>
+                Correo electrónico
+              </label>
+              <input
+                nbInput
+                fullWidth
+                name="email"
+                id="email"
+                placeholder="Ingrese correo electrónico"
+                autofocus
+                [status]="submitted && f.email.errors ? 'danger' : 'basic'"
+                type="email"
+                formControlName="email"
+              />
+              <div *ngIf="submitted && f.email.errors" class="text-danger">
+                <div *ngIf="f.email.errors.required">Es requerido</div>
+                <div *ngIf="f.email.errors.email">Debe ser válido</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CAMPOS AGREGADOS -->
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <label for="idNumber"> <span *ngIf="required('idNumber')" class="text-danger">*</span> Cédula </label>
+              <input
+                nbInput
+                fullWidth
+                id="idNumber"
+                formControlName="idNumber"
+                placeholder="Ingrese número de cédula"
+                [status]="submitted && f.idNumber.errors ? 'danger' : 'basic'"
+              />
+              <div *ngIf="submitted && f.idNumber.errors" class="text-danger">
+                <div *ngIf="f.idNumber.errors.required">Es requerido</div>
+                <div *ngIf="f.idNumber.errors.pattern">Debe tener exactamente 10 dígitos</div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label for="phone"> <span *ngIf="required('phone')" class="text-danger">*</span> Teléfono </label>
+              <input
+                nbInput
+                fullWidth
+                id="phone"
+                formControlName="phone"
+                placeholder="Ingrese número de teléfono"
+                [status]="submitted && f.phone.errors ? 'danger' : 'basic'"
+              />
+              <div *ngIf="submitted && f.phone.errors" class="text-danger">
+                <div *ngIf="f.phone.errors.required">Es requerido</div>
+                <div *ngIf="f.phone.errors.pattern">Debe tener 9 o 10 dígitos</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-3">
+            <div class="col-md-6">
+              <label for="birthDate">
+                <span *ngIf="required('birthDate')" class="text-danger">*</span> Fecha de nacimiento
+              </label>
+              <input
+                nbInput
+                fullWidth
+                type="date"
+                id="birthDate"
+                formControlName="birthDate"
+                [status]="submitted && f.birthDate.errors ? 'danger' : 'basic'"
+              />
+              <div *ngIf="submitted && f.birthDate.errors" class="text-danger">
+                <div *ngIf="f.birthDate.errors.required">Es requerido</div>
+                <div *ngIf="f.birthDate.errors.date">Debe ser una fecha válida</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="address" [ngClass]="{ 'text-danger': submitted && f.address.errors }">
+                  <span *ngIf="required('address')" class="text-danger">*</span>
+                  Dirección
+                </label>
+                <input
+                  type="text"
+                  nbInput
+                  fullWidth
+                  [status]="submitted && f.address.errors ? 'danger' : 'basic'"
+                  placeholder="Dirección"
+                  id="address"
+                  formControlName="address"
+                />
+                <div *ngIf="submitted && f.address.errors" class="text-danger">
+                  <div *ngIf="f.address.errors.required">Es requerido</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </nb-tab>
+    </nb-tabset>
+  </nb-card-body>
+
+  <nb-card-footer class="modal-footer">
+    <button
+      nbButton
+      type="button"
+      shape="rectangle"
+      status="basic"
+      outline
+      style="cursor: pointer"
+      [routerLink]="isCreate ? '../list' : '../../list'"
+    >
+      <nb-icon icon="close-outline" pack="eva"> </nb-icon> {{ 'button.cancel' | translate }}
+    </button>
+
+    <button
+      nbButton
+      *ngIf="isCreate || isUpdate"
+      shape="rectangle"
+      outline
+      status="success"
+      style="cursor: pointer"
+      (click)="onSubmit()"
+    >
+      <nb-icon icon="save-outline" pack="eva"> </nb-icon> {{ 'button.save' | translate }}
+    </button>
+  </nb-card-footer>
+</nb-card>

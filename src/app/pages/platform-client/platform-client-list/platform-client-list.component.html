@@ -1,0 +1,341 @@
+<nb-card accent="info">
+  <nb-card-header class="modal-header">
+    <span> Catálogo de productos digitales</span>
+    <!-- <div class="tool-bar">
+      <button nbButton shape="rectangle" outline status="primary" style="cursor: pointer" size="small" routerLink="../create">
+        <em class="fa fa-plus"></em>&nbsp;{{ 'button.new' | translate }}
+      </button>
+
+      <button
+        nbButton
+        shape="rectangle"
+        outline
+        status="warning"
+        style="cursor: pointer"
+        size="small"
+        [disabled]="actionDisabled"
+        [routerLink]="'../edit/' + selectedObj"
+      >
+        <em class="fa fa-edit"></em>&nbsp;{{ 'button.edit' | translate }}
+      </button>
+
+      <button
+        nbButton
+        shape="rectangle"
+        outline
+        status="info"
+        style="cursor: pointer"
+        size="small"
+        [disabled]="actionDisabled"
+        [routerLink]="'../view/' + selectedObj"
+      >
+        <em class="fa fa-info"></em>&nbsp;{{ 'button.view' | translate }}
+      </button>
+
+      <button
+        nbButton
+        shape="rectangle"
+        outline
+        status="danger"
+        style="cursor: pointer"
+        size="small"
+        [disabled]="actionDisabled"
+        (click)="delete()"
+      >
+        <em class="fa fa-trash"></em>&nbsp;{{ 'button.delete' | translate }}
+      </button>
+    </div> -->
+  </nb-card-header>
+
+  <nb-card-body class="modal-body">
+    <!-- <nb-alert *ngIf="showAlert" outline="info" closable (close)="onCloseAlert()">
+      <span>Los registros están ordenados por defecto con el campo "nombre plataforma".</span> -->
+    <!-- <span>El valor "Precio Venta Sugerido" se edita en sección de "Tablas y Datos".</span> -->
+    <!-- </nb-alert> -->
+    <p-table
+      #dt
+      [id]="tableName"
+      [columns]="selectedCols"
+      [value]="objs"
+      [resizableColumns]="tablePreference.resizable"
+      [reorderableColumns]="tablePreference.reorderable"
+      [rowHover]="true"
+      [paginator]="true"
+      paginatorPosition="top"
+      [rows]="20"
+      [(selection)]="selectedObjs"
+      dataKey="id"
+      autoLayout="true"
+      [loading]="showSpinner"
+      resetPageOnSort="true"
+      [exportFilename]="componentName"
+      showCurrentPageReport="true"
+      [currentPageReportTemplate]="''"
+      (onRowSelect)="onRowSelect($event)"
+      (onRowUnselect)="onRowUnselect($event)"
+      (onHeaderCheckboxToggle)="onHeaderCheckboxToggle($event)"
+      sortMode="multiple"
+      stateStorage="local"
+      [stateKey]="tableName"
+      styleClass="p-datatable-striped"
+      selectionMode="single"
+    >
+      <!-- [currentPageReportTemplate]="!isSmallScreen ? 'Mostrando {first} a {last} de {totalRecords} registros' : ''" -->
+      <ng-template pTemplate="caption">
+        <div class="d-flex justify-content-between flex-wrap align-items-center m-0">
+          <div class="d-flex flex-wrap align-items-center mb-2 mb-md-0 search-container">
+            <nb-form-field *ngIf="totalRecords > 0" class="mr-2">
+              <nb-icon nbPrefix icon="search-outline" pack="eva"></nb-icon>
+              <input
+                nbTooltip="Búsqueda global"
+                nbTooltipPlacement="left"
+                nbTooltipStatus="info"
+                type="text"
+                nbInput
+                [(ngModel)]="filterFieldGlobal"
+                placeholder="Búsqueda"
+                shape="rectangle"
+                status="info"
+                (change)="globalFilterBtnDisabled = false; dt.filterGlobal($event.target.value, 'contains')"
+                (input)="globalFilterBtnDisabled = false; dt.filterGlobal($event.target.value, 'contains')"
+              />
+            </nb-form-field>
+
+            <button
+              class="component-none"
+              *ngIf="totalRecords > 0"
+              nbTooltip="Limpiar"
+              nbTooltipPlacement="right"
+              nbTooltipStatus="info"
+              nbButton
+              shape="rectangle"
+              outline
+              status="info"
+              style="cursor: pointer"
+              (click)="
+                filterFieldGlobal = null;
+                dt.filterGlobal($event.target.value, 'contains');
+                globalFilterBtnDisabled = true;
+                dt.clear()
+              "
+            >
+              <nb-icon icon="trash-2-outline" pack="eva"> </nb-icon>
+            </button>
+          </div>
+
+          <div class="d-flex flex-wrap align-items-right button-group">
+            <button
+              nbTooltip="Vender plataforma"
+              nbTooltipPlacement="top"
+              nbTooltipStatus="info"
+              nbButton
+              shape="rectangle"
+              outline
+              status="primary"
+              style="cursor: pointer"
+              [disabled]="actionDisabled"
+              (click)="onOpenFormSale(selectedObj, 'S')"
+              class="mr-2"
+            >
+              <nb-icon icon="shopping-cart-outline" pack="eva"></nb-icon>{{ 'button.sale' | translate }}
+            </button>
+
+            <button
+              nbTooltip="Editar registro"
+              nbTooltipPlacement="top"
+              nbTooltipStatus="info"
+              nbButton
+              shape="rectangle"
+              outline
+              status="warning"
+              style="cursor: pointer"
+              [disabled]="actionDisabled"
+              (click)="onOpenForm(selectedObj, 'U')"
+              class="component-none mr-2"
+            >
+              <nb-icon icon="edit-2-outline" pack="eva"></nb-icon>{{ 'button.edit' | translate }}
+            </button>
+
+            <!-- Otros botones aquí -->
+          </div>
+        </div>
+      </ng-template>
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th scope="col" style="width: 2em">
+            <p-tableHeaderCheckbox *ngIf="multiSelectRecordDisabled"></p-tableHeaderCheckbox>
+          </th>
+          <th
+            scope="col"
+            *ngFor="let col of columns"
+            pResizableColumn
+            pReorderableColumn
+            [pSortableColumn]="tablePreference.sortable ? col.field : ''"
+            class="col-sm-6"
+          >
+            <div class="flex justify-content-between align-items-center">
+              {{ col.header }}
+              <p-sortIcon *ngIf="tablePreference.sortable" [field]="col.field"></p-sortIcon>
+              <span *ngIf="showFilter">
+                <span [ngSwitch]="col.field">
+                  <p-columnFilter
+                    *ngSwitchCase="'status'"
+                    [field]="col.field"
+                    matchMode="in"
+                    hideOnClear="true"
+                    display="menu"
+                    maxConstraints="3"
+                    class="ml-auto"
+                    [showMatchModes]="false"
+                    [showOperator]="false"
+                    [showAddButton]="false"
+                  >
+                    <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                      <p-multiSelect
+                        [options]="statuses"
+                        defaultLabel="Seleccione"
+                        optionLabel="label"
+                        optionValue="code"
+                        selectedItemsLabel="{0} items seleccionados"
+                        (onChange)="filter($event.value)"
+                      >
+                        <ng-template let-option pTemplate="item">
+                          <span [class]="'status-badge status-' + (option.code | lowercase)">{{ option.label }}</span>
+                        </ng-template>
+                      </p-multiSelect>
+                    </ng-template>
+                  </p-columnFilter>
+                  <p-columnFilter
+                    *ngSwitchDefault
+                    [field]="col.field"
+                    [disabled]="true"
+                    [type]="col.type"
+                    hideOnClear="true"
+                    display="menu"
+                    maxConstraints="3"
+                    class="ml-auto"
+                  ></p-columnFilter>
+                </span>
+              </span>
+            </div>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-rowData let-columns="columns">
+        <tr [pSelectableRow]="rowData">
+          <td>
+            <p-tableRadioButton [value]="rowData"></p-tableRadioButton>
+          </td>
+          <td *ngFor="let col of columns; let i = index" class="ui-resizable-column">
+            <div *ngIf="col.field != 'isEnabled' && col.field != 'platformImage'">
+              {{
+                col.type === 'date'
+                  ? (rowData[col.field] | date : DATE_FORMAT_LONG)
+                  : col.type === 'numeric'
+                  ? (rowData[col.field] | number : NUMBER_FORMAT : LOCALE)
+                  : (rowData[col.field] | translate)
+              }}
+            </div>
+
+            <!-- <div *ngIf="col.field === 'isEnabled'; then enabledControl">loading template</div>
+            <ng-template #enabledControl>
+              <nb-toggle
+                status="primary"
+                [checked]="rowData.isEnabled"
+                (checkedChange)="onValueChange($event, rowData.id)"
+              ></nb-toggle>
+            </ng-template> -->
+
+            <div *ngIf="col.field === 'platformImage'; then enabledControlImage">loading template</div>
+            <ng-template #enabledControlImage>
+              <img [src]="rowData.platformImage" width="100" class="shadow-4 rounded-image" />
+            </ng-template>
+          </td>
+          <!-- <td>
+            <button
+              nbTooltip="Vender plataforma"
+              nbTooltipPlacement="top"
+              nbTooltipStatus="info"
+              nbButton
+              shape="rectangle"
+              outline
+              [id]="rowData.id"
+              status="primary"
+              style="cursor: pointer"
+              [disabled]="!selectedObj"
+              (click)="onOpenFormSale(selectedObj, 'S')"
+              class="mr-2"
+            >
+              <nb-icon icon="shopping-cart-outline" pack="eva"></nb-icon>{{ 'button.sale' | translate }}
+            </button>
+          </td> -->
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="paginatorleft" let-state> </ng-template>
+      <ng-template pTemplate="paginatorright" let-state>
+        <button
+          nbTooltip="Actualizar tabla"
+          nbTooltipPlacement="bottom"
+          nbTooltipStatus="info"
+          nbButton
+          ghost
+          (click)="
+            filterFieldGlobal = null;
+            dt.filterGlobal($event.target.value, 'contains');
+            globalFilterBtnDisabled = true;
+            dt.clear();
+            initAll()
+          "
+        >
+          <nb-icon icon="refresh-outline"></nb-icon>
+        </button>
+        <button
+          class="component-none"
+          *ngIf="tablePreference.exportable"
+          nbTooltip="Exportar tabla"
+          nbTooltipPlacement="bottom"
+          nbTooltipStatus="info"
+          nbButton
+          ghost
+          (click)="openTableExport(dt)"
+        >
+          <nb-icon icon="download-outline"></nb-icon>
+        </button>
+        <button
+          class="component-none"
+          *ngIf="tablePreference.filterable"
+          nbTooltip="Filtrar tabla"
+          nbTooltipPlacement="bottom"
+          nbTooltipStatus="info"
+          nbButton
+          ghost
+          (click)="onFilterClick(dt)"
+          [ngClass]="{ classFilter: showFilter }"
+        >
+          <nb-icon icon="funnel-outline"></nb-icon>
+        </button>
+        <button
+          class="component-none"
+          nbTooltip="Configurar tabla"
+          nbTooltipPlacement="bottom"
+          nbTooltipStatus="info"
+          nbButton
+          ghost
+          (click)="openTablePreference()"
+        >
+          <nb-icon icon="settings-outline"></nb-icon>
+        </button>
+      </ng-template>
+      <ng-template pTemplate="loadingbody" let-columns="columns">
+        <tr>
+          <td>{{ 'spinner.loading' | translate }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage" let-columns>
+        <tr>
+          <td [attr.colspan]="columns.length + 1">{{ 'primeng.emptyMessage' | translate }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </nb-card-body>
+</nb-card>

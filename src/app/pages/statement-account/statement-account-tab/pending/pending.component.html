@@ -1,0 +1,46 @@
+<nb-card accent="info">
+  <nb-card-body>
+    <h6 class="mb-3"><strong>PAGOS PENDIENTES</strong></h6>
+
+    <!-- Si pendingPayments está vacío, mostrar el mensaje -->
+    <div *ngIf="pendingPayments.length === 0" class="alert alert-warning text-center">
+      <nb-icon icon="alert-circle-outline" pack="eva" status="warning"></nb-icon>
+      <span class="ms-2">No existen registros de pagos pendientes.</span>
+    </div>
+
+    <!-- Tabla solo si hay pagos -->
+    <table *ngIf="pendingPayments.length > 0" class="table table-hover table-striped table-bordered text-center align-middle">
+      <thead class="table-primary">
+        <tr>
+          <th>ÍNDICE</th>
+          <th>FECHA DE PAGO</th>
+          <th>VALOR DE PAGO</th>
+          <th>REFERENCIA</th>
+          <th>DOCUMENTO</th>
+          <th>FECHA DE CREACIÓN</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let payment of pendingPayments; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ payment.payment_date || 'N/A' }}</td>
+          <td>${{ payment.amount || '0.00' }}</td>
+          <td>{{ payment.reference || 'N/A' }}</td>
+          <td class="text-center">
+            <button
+              nbButton
+              shape="rectangle"
+              outline
+              status="info"
+              style="cursor: pointer"
+              (click)="openVoucher(payment.voucher_file_base64)"
+            >
+              <nb-icon icon="file-text-outline" pack="eva" status="primary"></nb-icon>
+            </button>
+          </td>
+          <td>{{ payment.created_at | date : 'yyyy-MM-dd' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </nb-card-body>
+</nb-card>
