@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   NbActionsModule,
   NbAlertModule,
+  NbBadgeModule,
   NbButtonModule,
   NbCardModule,
   NbCheckboxModule,
@@ -29,6 +30,7 @@ import { ChartModule } from 'primeng/chart';
     ThemeModule,
     DashboardRoutingModule,
     NbActionsModule,
+    NbBadgeModule,
     NbCardModule,
     NbSelectModule,
     NbInputModule,
@@ -54,4 +56,4 @@ import { ChartModule } from 'primeng/chart';
   declarations: [...routedComponents],
   providers: [DatePipe],
 })
-export class DashboardModule {}
+export class DashboardModule { }

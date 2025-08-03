@@ -74,8 +74,14 @@ export class BaseListComponent extends BaseComponent {
   }
 
   private removeTableSelectionState(): void {
-   
+    // const values = JSON.parse(localStorage.getItem(this.tableName));
+    // if (values && values.selection) {
+    //   values.selection = [];
+    //   localStorage.removeItem(this.tableName);
+    //   localStorage.setItem(this.tableName, JSON.stringify(values));
+    // }
     localStorage.removeItem(this.tableName);
+    // localStorage.setItem(this.tableName, JSON.stringify(values));
   }
 
   protected setSelectedObj(obj: any): void {
@@ -153,7 +159,22 @@ export class BaseListComponent extends BaseComponent {
     this.selectedCols = this.cols;
     this.selectedCols = this.selectedCols.filter((col) => col.hide != true);
     this.setExportableCols(this.cols);
-   
+    // this.tablePreference = {
+    //   pageable: true,
+    //   exportable: true,
+    //   reorderable: true,
+    //   resizable: true,
+    //   filterable: true,
+    //   csvExport: true,
+    //   globalFilter: true,
+    //   pageSize: '25',
+    //   pdfExport: true,
+    //   sortable: true,
+    //   tableName: '',
+    //   xlsExport: true,
+    //   userId: '',
+    //   id: '',
+    // };
     this.tablePreferenceService.findByTableName(this.tableName).subscribe((res) => {
       if (res) {
         console.log(res);
@@ -273,6 +294,58 @@ export class BaseListComponent extends BaseComponent {
     FileSaver.saveAs(data, this.getExportFileName() + this.EXCEL_EXTENSION);
   }
 
+  // public exportCSV(_separator?: string): void {
+  //   this.logger.debug('exportCSV');
+  //   // var _this = this;
+  //   const exportRecords = this.fillExportRecords(this.CSV_TYPE);
+  //   // var selColumns = this.selectedColumns;
+  //   let csv = '';
+  //   let separator = this.CSV_SEPARATOR;
+  //   if (_separator) {
+  //     separator = _separator;
+  //   }
+  //   // headers
+  //   for (let i = 0; i < this.exportColumns.length; i++) {
+  //     const column = this.exportColumns[i];
+  //     csv += '"' + this.getTranslation(column.title) + '"';
+  //     if (i < this.exportColumns.length - 1) {
+  //       csv += separator;
+  //     }
+  //   }
+  //   // body
+  //   exportRecords.forEach((record) => {
+  //     csv += '\n';
+  //     let cellData: any;
+  //     for (let j = 0; j < this.exportColumns.length; j++) {
+  //       const key = this.exportColumns[j].dataKey;
+  //       cellData = record[key];
+  //       if (cellData != null) {
+  //         cellData = String(cellData).replace(/"/g, '""');
+  //       } else {
+  //         cellData = '';
+  //       }
+  //       csv += '"' + cellData + '"';
+  //       if (j < this.exportColumns.length - 1) {
+  //         csv += separator;
+  //       }
+  //     }
+  //   });
+  //   const blob = new Blob([csv], {
+  //     type: 'text/csv;charset=utf-8;',
+  //   });
+  //   const link = document.createElement('a');
+  //   link.style.display = 'none';
+  //   document.body.appendChild(link);
+  //   if (link.download !== undefined) {
+  //     link.setAttribute('href', URL.createObjectURL(blob));
+  //     link.setAttribute('download', this.getExportFileName() + this.CSV_EXTENSION);
+  //     link.click();
+  //   } else {
+  //     csv = 'data:text/csv;charset=utf-8,' + csv;
+  //     window.open(encodeURI(csv));
+  //   }
+  //   document.body.removeChild(link);
+  // }
 
   private fillExportRecords(dt, format: string): any[] {
     this.logger.debug('fillExportObjs');
@@ -364,6 +437,17 @@ export class BaseListComponent extends BaseComponent {
     this.handleActionButtons();
   }
 
+  // public onFieldToggle(event: any): void {
+  //   this.logger.debug(`onFieldToggle : `, event);
+  //   this.logger.debug(this.toggleCols);
+  //   this.exportColumns = this.toggleCols.map((col) => ({
+  //     title: col.header,
+  //     dataKey: col.field,
+  //     type: col.type,
+  //   }));
+  // }
+  // Row select events
+
   public onDatePeriodFilter(event: any, dateField: any, dt: any): void {
     this.logger.debug(event);
     if (event === -1) {
@@ -393,13 +477,34 @@ export class BaseListComponent extends BaseComponent {
       dt.clear();
     }
     this.showFilter = !this.showFilter;
-   
+    // if (this.showFilter == false) {
+    //   dt.clear();
+    //   this.filterFieldGlobal = null;
+    //   this.globalFilterBtnDisabled = true;
+    // } else {
+    //   dt.clear();
+    // }
   }
 
   public clear(_table: Table) {
     this.logger.debug('clear table');
     _table.clear();
   }
+
+  // // public onClearClick(dt, event): void {
+  // //   this.logger.debug('clearDatatable');
+
+  // //   dt.clear();
+  // //   this.filterFieldGlobal = null;
+
+  // //   this.globalFilterBtnDisabled = true;
+  // // }
+
+  // // public filterGlobalEvent(dt, event): void {
+  // //   this.logger.debug('filterGlobalEvent');
+  // //   this.globalFilterBtnDisabled = false;
+  // //   dt.filterGlobal(event.target.value, 'contains');
+  // // }
 
   public openTablePreference(): void {
     this.logger.debug('openTablePreference for : ', this.tableName);

@@ -1,86 +1,166 @@
 <nb-card accent="primary">
-  <nb-card-header>
-    <h5>Resumen General</h5>
+  <nb-card-header class="d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">📊 Dashboard - Resumen General</h5>
+    <div class="dashboard-period-selector">
+      <nb-select
+        size="small"
+        placeholder="Año"
+        [(ngModel)]="selectedPeriod"
+        (selectedChange)="onPeriodChange($event)"
+        style="min-width: 120px"
+      >
+        <nb-option *ngFor="let year of ['2025', '2026', '2027', '2028', '2029', '2030']" [value]="year">
+          {{ year }}
+        </nb-option>
+      </nb-select>
+    </div>
   </nb-card-header>
   <nb-card-body>
-    <!-- Selector de Periodo -->
-    <div class="row mb-4">
-      <div class="col-md-12">
-        <label for="filter-period"><strong>Periodo:</strong></label>
-        <nb-select
-          fullWidth
-          id="filter-period"
-          placeholder="Seleccione un periodo"
-          [(ngModel)]="selectedPeriod"
-          (selectedChange)="onPeriodChange($event)"
-        >
-          <nb-option *ngFor="let year of ['2025', '2026', '2027', '2028', '2029', '2030']" [value]="year">
-            {{ year }}
-          </nb-option>
-        </nb-select>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-6">
-        <nb-card status="info">
-          <nb-card-header>Cursos Activos</nb-card-header>
-          <nb-card-body>{{ stats?.activeCourses }}</nb-card-body>
+    <!-- KPIs Cards -->
+    <div class="row mb-3">
+      <div class="col-md-3 col-sm-6 mb-2">
+        <nb-card size="small" class="stats-card stats-card-info">
+          <nb-card-header class="text-center py-2">
+            <nb-icon icon="book-outline" class="stats-icon text-info"></nb-icon>
+            <small class="stats-label">📚 Cursos Activos</small>
+          </nb-card-header>
+          <nb-card-body class="text-center py-2">
+            <h3 class="mb-0 stats-number text-info">{{ stats?.activeCourses || 0 }}</h3>
+            <small class="text-muted">Disponibles</small>
+          </nb-card-body>
         </nb-card>
       </div>
-      <div class="col-md-6">
-        <nb-card status="success">
-          <nb-card-header>Estudiantes registrados</nb-card-header>
-          <nb-card-body>{{ stats?.totalEnrollments }}</nb-card-body>
+      <div class="col-md-3 col-sm-6 mb-2">
+        <nb-card size="small" class="stats-card stats-card-success">
+          <nb-card-header class="text-center py-2">
+            <nb-icon icon="people-outline" class="stats-icon text-success"></nb-icon>
+            <small class="stats-label">👥 Total Estudiantes</small>
+          </nb-card-header>
+          <nb-card-body class="text-center py-2">
+            <h3 class="mb-0 stats-number text-success">{{ stats?.totalEnrollments || 0 }}</h3>
+            <small class="text-muted">Matriculados</small>
+          </nb-card-body>
         </nb-card>
       </div>
-    </div>
-
-    <div class="row mt-4">
-      <div class="col-md-12 d-flex justify-content-center">
-        <div class="text-center mb-2">
-          <strong>Gráfico de estados</strong>
-        </div>
-        <div style="width: 700px; height: 400px;">
-          <p-chart type="pie" [data]="pieChartData" [options]="chartOptions"></p-chart>
-        </div>
+      <div class="col-md-3 col-sm-6 mb-2">
+        <nb-card size="small" class="stats-card stats-card-warning">
+          <nb-card-header class="text-center py-2">
+            <nb-icon icon="clock-outline" class="stats-icon text-warning"></nb-icon>
+            <small class="stats-label">⏳ Pendientes</small>
+          </nb-card-header>
+          <nb-card-body class="text-center py-2">
+            <h3 class="mb-0 stats-number text-warning">{{ stats?.pendingEnrollments || 0 }}</h3>
+            <small class="text-muted">Por aprobar</small>
+          </nb-card-body>
+        </nb-card>
       </div>
-    </div>
-
-    <div class="row mt-4">
-      <div class="col-md-12">
-        <nb-card>
-          <nb-card-header>Matrículas por Curso</nb-card-header>
-          <nb-card-body>
-            <p-chart type="bar" [data]="barChartData" [options]="barChartOptions"></p-chart>
+      <div class="col-md-3 col-sm-6 mb-2">
+        <nb-card size="small" class="stats-card stats-card-primary">
+          <nb-card-header class="text-center py-2">
+            <nb-icon icon="checkmark-circle-outline" class="stats-icon text-primary"></nb-icon>
+            <small class="stats-label">✅ Completados</small>
+          </nb-card-header>
+          <nb-card-body class="text-center py-2">
+            <h3 class="mb-0 stats-number text-primary">{{ stats?.completedEnrollments || 0 }}</h3>
+            <small class="text-muted">Finalizados</small>
           </nb-card-body>
         </nb-card>
       </div>
     </div>
 
-    <div class="row mt-4">
-      <div class="col-md-12">
-        <nb-card>
-          <nb-card-header>Últimas Inscripciones</nb-card-header>
-          <nb-card-body>
-            <table class="table table-bordered table-sm">
-              <thead>
-                <tr>
-                  <th>Estudiante</th>
-                  <th>Curso</th>
-                  <th>Estado</th>
-                  <th>Fecha</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let item of latestEnrollments">
-                  <td>{{ item.student }}</td>
-                  <td>{{ item.course }}</td>
-                  <td>{{ item.status }}</td>
-                  <td>{{ item.enrolled_at }}</td>
-                </tr>
-              </tbody>
-            </table>
+    <!-- Charts Row - Redesigned: Full Width Stacked -->
+    <div class="row mb-3">
+      <!-- Estado de Matrículas - Full Width -->
+      <div class="col-12 mb-4">
+        <nb-card size="medium" class="chart-card">
+          <nb-card-header class="d-flex align-items-center py-3">
+            <nb-icon icon="pie-chart-outline" class="mr-2"></nb-icon>
+            <span>📊 Estados de Matrículas - Distribución General</span>
+          </nb-card-header>
+          <nb-card-body class="p-0">
+            <div class="chart-container-pie-fullwidth">
+              <p-chart type="pie" [data]="pieChartData" [options]="chartOptions"></p-chart>
+            </div>
+          </nb-card-body>
+        </nb-card>
+      </div>
+
+      <!-- Personas Matriculadas por Curso - Full Width -->
+      <div class="col-12 mb-4">
+        <nb-card size="medium" class="chart-card">
+          <nb-card-header class="d-flex align-items-center py-3">
+            <nb-icon icon="bar-chart-outline" class="mr-2"></nb-icon>
+            <span>� Personas Matriculadas por Curso - Total de Inscripciones</span>
+          </nb-card-header>
+          <nb-card-body class="p-0">
+            <div class="chart-container-bar-fullwidth">
+              <p-chart type="bar" [data]="barChartData" [options]="barChartOptions"></p-chart>
+            </div>
+          </nb-card-body>
+        </nb-card>
+      </div>
+    </div>
+
+    <!-- Recent Enrollments Table -->
+    <div class="row">
+      <div class="col-12">
+        <nb-card size="small">
+          <nb-card-header class="d-flex justify-content-between align-items-center py-2">
+            <div class="d-flex align-items-center">
+              <nb-icon icon="list-outline" class="mr-2"></nb-icon>
+              <span>Últimas 5 Inscripciones</span>
+            </div>
+            <small class="text-muted">{{ latestEnrollments?.length || 0 }} registros</small>
+          </nb-card-header>
+          <nb-card-body class="py-2">
+            <!-- Estado Legend -->
+            <div class="mb-3 p-2 status-legend">
+              <small class="text-muted">
+                <strong>📊 Estados de Matrícula:</strong>
+                <span class="status-info">
+                  <span class="badge-success">✅ COMPLETADA</span> = Proceso finalizado exitosamente •
+                  <span class="badge-warning">⏳ PENDIENTE</span> = Esperando aprobación •
+                  <span class="badge-danger">❌ CANCELADA</span> = Proceso cancelado
+                </span>
+              </small>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-hover table-sm">
+                <thead class="table-light">
+                  <tr>
+                    <th class="border-0"><small>👤 Estudiante</small></th>
+                    <th class="border-0"><small>📚 Curso</small></th>
+                    <th class="border-0 text-center"><small>📊 Estado</small></th>
+                    <th class="border-0 text-center"><small>📅 Fecha</small></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let item of latestEnrollments; let i = index">
+                    <td>
+                      <strong>{{ item.student }}</strong>
+                    </td>
+                    <td>
+                      <span class="text-primary">{{ item.course }}</span>
+                    </td>
+                    <td class="text-center">
+                      <span class="custom-badge" [ngClass]="getStatusBadgeClass(item.status)">
+                        {{ getStatusDisplayText(item.status) }}
+                      </span>
+                    </td>
+                    <td class="text-center">
+                      <small class="text-muted">{{ item.enrolled_at | date : 'dd/MM/yyyy' }}</small>
+                    </td>
+                  </tr>
+                  <tr *ngIf="!latestEnrollments || latestEnrollments.length === 0">
+                    <td colspan="4" class="text-center text-muted py-4">
+                      <nb-icon icon="inbox-outline"></nb-icon>
+                      <br />
+                      <small>No hay inscripciones recientes</small>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </nb-card-body>
         </nb-card>
       </div>

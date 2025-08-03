@@ -8,6 +8,7 @@ import { UserDetailModule } from './user-detail/user-detail.module';
 import { ClientDetailModule } from './client-detail/client-detail.module';
 import { StatementAccountModule } from './statement-account/statement-account.module';
 import { PendingPaymentModule } from './pending-payment/pending-payment.module';
+import { ApprovalPaymentModule } from './approval-payment/approval-payment.module';
 import { RejectPaymentModule } from './reject-payment/reject-payment.module';
 import { SettingModule } from './setting/setting.module';
 import { CourseModule } from './course/course.module';
@@ -53,6 +54,11 @@ const routes: Routes = [
         path: 'pending-payment',
         loadChildren: (): Promise<PendingPaymentModule> =>
           import('./pending-payment/pending-payment.module').then((m) => m.PendingPaymentModule),
+      },
+      {
+        path: 'approval-payment',
+        loadChildren: (): Promise<ApprovalPaymentModule> =>
+          import('./approval-payment/approval-payment.module').then((m) => m.ApprovalPaymentModule),
       },
       {
         path: 'reject-payment',
@@ -120,27 +126,11 @@ const routes: Routes = [
       //   path: 'currency',
       //   loadChildren: (): Promise<CurrencyModule> => import('./currency/currency.module').then((m) => m.CurrencyModule),
       // },
+      // Otros módulos comentados que no están implementados
       // {
       //   path: 'account-type',
       //   loadChildren: (): Promise<AccountTypeModule> =>
       //     import('./account-type/account-type.module').then((m) => m.AccountTypeModule),
-      // },
-      // {
-      //   path: 'account',
-      //   loadChildren: (): Promise<AccountModule> => import('./account/account.module').then((m) => m.AccountModule),
-      // },
-      // {
-      //   path: 'sale',
-      //   loadChildren: (): Promise<SaleModule> => import('./sale/sale.module').then((m) => m.SaleModule),
-      // },
-      // {
-      //   path: 'booking',
-      //   loadChildren: (): Promise<BookingModule> => import('./booking/booking.module').then((m) => m.BookingModule),
-      // },
-      // {
-      //   path: 'platform-client',
-      //   loadChildren: (): Promise<PlatformClientModule> =>
-      //     import('./platform-client/platform-client.module').then((m) => m.PlatformClientModule),
       // },
       // {
       //   path: 'client-account',
@@ -237,4 +227,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class PagesRoutingModule {}
+export class PagesRoutingModule { }
