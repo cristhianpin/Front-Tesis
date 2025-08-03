@@ -14,6 +14,8 @@ export class ViewComponent extends BaseFormComponent implements OnInit, AfterVie
   barChartData: any;
   chartOptions: any;
   barChartOptions: any;
+  coursesPieChartData: any; // Nuevo pie chart para cursos
+  coursesPieChartOptions: any; // Opciones para el pie chart de cursos
   latestEnrollments: any[] = [];
   public selectedPeriod = '2025'; // valor inicial
 
@@ -28,6 +30,45 @@ export class ViewComponent extends BaseFormComponent implements OnInit, AfterVie
 
   ngAfterViewInit(): void {
     this.logger.debug('ngAfterViewInit');
+    // Forzar redimensionamiento de gráficos después de la vista
+    setTimeout(() => {
+      this.forceChartResize();
+    }, 500);
+
+    // Agregar listener para resize de ventana
+    window.addEventListener('resize', () => {
+      setTimeout(() => {
+        this.forceChartResize();
+      }, 100);
+    });
+  }
+
+  private forceChartResize(): void {
+    // Forzar el ancho del canvas a ocupar todo el contenedor
+    const canvasElements = document.querySelectorAll('.chart-container-pie-fullwidth canvas');
+    canvasElements.forEach((canvas: HTMLCanvasElement) => {
+      const container = canvas.closest('.chart-container-pie-fullwidth') as HTMLElement;
+      if (container) {
+        const containerWidth = container.clientWidth - 50; // Restar padding
+
+        // Aplicar estilos directamente al canvas
+        canvas.style.setProperty('width', `${containerWidth}px`, 'important');
+        canvas.style.setProperty('max-width', 'none', 'important');
+        canvas.setAttribute('width', containerWidth.toString());
+
+        // También ajustar el div padre si existe
+        const parentDiv = canvas.parentElement;
+        if (parentDiv) {
+          parentDiv.style.setProperty('width', `${containerWidth}px`, 'important');
+        }
+
+        // Buscar y ajustar el componente p-chart
+        const pChart = container.querySelector('p-chart > div');
+        if (pChart) {
+          (pChart as HTMLElement).style.setProperty('width', `${containerWidth}px`, 'important');
+        }
+      }
+    });
   }
 
   ngOnDestroy(): void {
@@ -124,104 +165,56 @@ export class ViewComponent extends BaseFormComponent implements OnInit, AfterVie
             data.push(totalEnrolledCount);
           });
 
-          console.log('Final bar chart labels:', labels);
-          console.log('Final bar chart data:', data);
+          console.log('Final pie chart labels:', labels);
+          console.log('Final pie chart data:', data);
 
-          this.barChartData = {
-            labels: labels,
-            datasets: [
-              {
-                label: 'Personas Matriculadas',
-                data: data,
-                backgroundColor: [
-                  '#007BFF', // Azul principal
-                  '#28A745', // Verde
-                  '#FFC107', // Amarillo
-                  '#DC3545', // Rojo
-                  '#6F42C1', // Púrpura
-                  '#FD7E14', // Naranja
-                  '#20C997', // Turquesa
-                  '#E83E8C'  // Rosa
-                ],
-                borderColor: [
-                  '#0056B3', // Azul oscuro
-                  '#1E7E34', // Verde oscuro
-                  '#E0A800', // Amarillo oscuro
-                  '#A71E2B', // Rojo oscuro
-                  '#4C2A85', // Púrpura oscuro
-                  '#C55A11', // Naranja oscuro
-                  '#17A085', // Turquesa oscuro
-                  '#B02A5C'  // Rosa oscuro
-                ],
-                borderWidth: 2,
-                borderRadius: 4,
-                borderSkipped: false
-              },
-            ],
-          };
-
-          console.log('Bar chart data configured for total enrollments:', this.barChartData);
-
-          // Si no hay datos válidos, usar datos de muestra
-          if (labels.length === 0) {
-            console.log('No valid course data found, using sample data');
-            this.barChartData = {
-              labels: ['Programación Angular', 'Base de Datos', 'Desarrollo Web', 'Java Avanzado', 'Python Básico'],
+          // Solo crear pie chart si hay datos válidos
+          if (labels.length > 0 && data.some(value => value > 0)) {
+            // Crear pie chart para distribución de personas por curso
+            this.coursesPieChartData = {
+              labels: labels,
               datasets: [
                 {
-                  label: 'Personas Matriculadas',
-                  data: [25, 18, 32, 14, 20],
+                  data: data,
                   backgroundColor: [
-                    '#007BFF',
-                    '#28A745',
-                    '#FFC107',
-                    '#DC3545',
-                    '#6F42C1'
+                    '#007BFF', // Azul principal
+                    '#28A745', // Verde
+                    '#FFC107', // Amarillo
+                    '#DC3545', // Rojo
+                    '#6F42C1', // Púrpura
+                    '#FD7E14', // Naranja
+                    '#20C997', // Turquesa
+                    '#E83E8C', // Rosa
+                    '#17A2B8', // Info
+                    '#6C757D'  // Gris
                   ],
                   borderColor: [
-                    '#0056B3',
-                    '#1E7E34',
-                    '#E0A800',
-                    '#A71E2B',
-                    '#4C2A85'
+                    '#0056B3', // Azul oscuro
+                    '#1E7E34', // Verde oscuro
+                    '#E0A800', // Amarillo oscuro
+                    '#A71E2B', // Rojo oscuro
+                    '#4C2A85', // Púrpura oscuro
+                    '#C55A11', // Naranja oscuro
+                    '#17A085', // Turquesa oscuro
+                    '#B02A5C', // Rosa oscuro
+                    '#117A8B', // Info oscuro
+                    '#545B62'  // Gris oscuro
                   ],
-                  borderWidth: 2,
-                  borderRadius: 4,
-                  borderSkipped: false
+                  borderWidth: 2
                 },
               ],
             };
+
+            console.log('Pie chart data configured for course distribution:', this.coursesPieChartData);
+          } else {
+            // No hay datos válidos, establecer null para mostrar mensaje
+            console.log('No valid course data found');
+            this.coursesPieChartData = null;
           }
         } else {
-          // Datos de ejemplo si no hay datos del backend
-          console.log('No course data from backend, using sample data');
-          this.barChartData = {
-            labels: ['Programación Angular', 'Base de Datos', 'Desarrollo Web', 'Java Avanzado', 'Python Básico'],
-            datasets: [
-              {
-                label: 'Personas Matriculadas',
-                data: [25, 18, 32, 14, 20],
-                backgroundColor: [
-                  '#007BFF',
-                  '#28A745',
-                  '#FFC107',
-                  '#DC3545',
-                  '#6F42C1'
-                ],
-                borderColor: [
-                  '#0056B3',
-                  '#1E7E34',
-                  '#E0A800',
-                  '#A71E2B',
-                  '#4C2A85'
-                ],
-                borderWidth: 2,
-                borderRadius: 4,
-                borderSkipped: false
-              },
-            ],
-          };
-          console.log('Using sample bar chart data for total enrollments by course');
+          // No hay datos del backend, establecer null
+          console.log('No course data from backend');
+          this.coursesPieChartData = null;
         }
 
 
@@ -264,31 +257,26 @@ export class ViewComponent extends BaseFormComponent implements OnInit, AfterVie
             }
           });
 
-          this.pieChartData = {
-            labels: labels,
-            datasets: [
-              {
-                data: dataValues,
-                backgroundColor: backgroundColors,
-                borderColor: borderColors,
-                borderWidth: 2
-              },
-            ],
-          };
+          // Solo crear gráfico si hay datos válidos
+          if (dataValues.some(value => value > 0)) {
+            this.pieChartData = {
+              labels: labels,
+              datasets: [
+                {
+                  data: dataValues,
+                  backgroundColor: backgroundColors,
+                  borderColor: borderColors,
+                  borderWidth: 2
+                },
+              ],
+            };
+          } else {
+            this.pieChartData = null;
+          }
         } else {
-          // Datos de ejemplo para el pie chart
-          this.pieChartData = {
-            labels: ['Matrícula Completada', 'Matrícula Pendiente', 'Matrícula Cancelada'],
-            datasets: [
-              {
-                data: [15, 8, 3],
-                backgroundColor: ['#28A745', '#FFC107', '#DC3545'], // Verde, Amarillo, Rojo
-                borderColor: ['#1E7E34', '#E0A800', '#A71E2B'],
-                borderWidth: 2
-              },
-            ],
-          };
-          console.log('Using sample pie chart data');
+          // No hay datos del backend, establecer null
+          this.pieChartData = null;
+          console.log('No status data from backend');
         }
 
         // Configurar opciones de gráficos
@@ -299,47 +287,55 @@ export class ViewComponent extends BaseFormComponent implements OnInit, AfterVie
         // Debug: verificar datos
         console.log('Latest enrollments from backend:', this.latestEnrollments);
 
-        // Si no hay datos, agregar datos de ejemplo para mostrar la funcionalidad
+        // Si no hay datos, establecer array vacío
         if (!this.latestEnrollments || this.latestEnrollments.length === 0) {
-          this.latestEnrollments = [
-            {
-              student: 'Juan Pérez',
-              course: 'Programación Angular',
-              status: 'COMPLETADA',
-              enrolled_at: '2025-08-01T10:30:00Z'
-            },
-            {
-              student: 'María García',
-              course: 'Base de Datos',
-              status: 'PENDIENTE',
-              enrolled_at: '2025-08-02T14:20:00Z'
-            },
-            {
-              student: 'Carlos López',
-              course: 'Desarrollo Web',
-              status: 'CANCELADA',
-              enrolled_at: '2025-08-01T09:15:00Z'
-            },
-            {
-              student: 'Ana Martínez',
-              course: 'Java Avanzado',
-              status: 'COMPLETADA',
-              enrolled_at: '2025-07-30T16:45:00Z'
-            }
-          ];
-          console.log('Using sample data:', this.latestEnrollments);
+          this.latestEnrollments = [];
+          console.log('No latest enrollments data from backend');
         }
       } else {
-        // Si no hay datos del backend, configurar datos de ejemplo
-        console.log('No data from backend, setting up sample data');
-        this.setupSampleData();
+        // Si no hay datos del backend, inicializar con valores vacíos
+        console.log('No data from backend, initializing empty dashboard');
+        this.stats = {
+          activeCourses: 0,
+          totalEnrollments: 0,
+          canceledEnrollments: 0,
+          pendingEnrollments: 0,
+          completedEnrollments: 0,
+        };
+
+        this.pieChartData = null;
+        this.coursesPieChartData = null;
+        this.latestEnrollments = [];
+
+        // Configurar opciones de gráficos
+        this.setupChartOptions();
       }
 
       this.showSpinner = false;
+
+      // Forzar redimensionamiento después de cargar datos
+      setTimeout(() => {
+        this.forceChartResize();
+      }, 100);
     }, (error) => {
-      // Manejo de errores
+      // Manejo de errores - no usar datos de ejemplo
       console.error('Error loading dashboard data:', error);
-      this.setupSampleData();
+
+      this.stats = {
+        activeCourses: 0,
+        totalEnrollments: 0,
+        canceledEnrollments: 0,
+        pendingEnrollments: 0,
+        completedEnrollments: 0,
+      };
+
+      this.pieChartData = null;
+      this.coursesPieChartData = null;
+      this.latestEnrollments = [];
+
+      // Configurar opciones de gráficos
+      this.setupChartOptions();
+
       this.showSpinner = false;
     });
 
@@ -383,91 +379,6 @@ export class ViewComponent extends BaseFormComponent implements OnInit, AfterVie
       default:
         return status;
     }
-  }
-
-  private setupSampleData(): void {
-    console.log('Setting up sample data for all charts and metrics');
-
-    // Stats de ejemplo
-    this.stats = {
-      activeCourses: 4,
-      totalEnrollments: 41,
-      canceledEnrollments: 3,
-      pendingEnrollments: 8,
-      completedEnrollments: 30,
-    };
-
-    // Datos de gráfico de barras de ejemplo (TODAS las personas matriculadas)
-    this.barChartData = {
-      labels: ['Programación Angular', 'Base de Datos', 'Desarrollo Web', 'Java Avanzado', 'Python Básico'],
-      datasets: [
-        {
-          label: 'Personas Matriculadas',
-          data: [25, 18, 32, 14, 20],
-          backgroundColor: [
-            '#007BFF', // Azul principal
-            '#28A745', // Verde
-            '#FFC107', // Amarillo
-            '#DC3545', // Rojo
-            '#6F42C1'  // Púrpura
-          ],
-          borderColor: [
-            '#0056B3', // Azul oscuro
-            '#1E7E34', // Verde oscuro
-            '#E0A800', // Amarillo oscuro
-            '#A71E2B', // Rojo oscuro
-            '#4C2A85'  // Púrpura oscuro
-          ],
-          borderWidth: 2,
-          borderRadius: 4,
-          borderSkipped: false
-        },
-      ],
-    };
-
-    // Datos del gráfico circular de ejemplo
-    this.pieChartData = {
-      labels: ['Matrícula Completada', 'Matrícula Pendiente', 'Matrícula Cancelada'],
-      datasets: [
-        {
-          data: [30, 8, 3],
-          backgroundColor: ['#28A745', '#FFC107', '#DC3545'],
-          borderColor: ['#1E7E34', '#E0A800', '#A71E2B'],
-          borderWidth: 2
-        },
-      ],
-    };
-
-    // Configurar opciones de gráficos
-    this.setupChartOptions();
-
-    // Datos de inscripciones recientes de ejemplo
-    this.latestEnrollments = [
-      {
-        student: 'Juan Pérez',
-        course: 'Programación Angular',
-        status: 'COMPLETADA',
-        enrolled_at: '2025-08-01T10:30:00Z'
-      },
-      {
-        student: 'María García',
-        course: 'Base de Datos',
-        status: 'PENDIENTE',
-        enrolled_at: '2025-08-02T14:20:00Z'
-      },
-      {
-        student: 'Carlos López',
-        course: 'Desarrollo Web',
-        status: 'CANCELADA',
-        enrolled_at: '2025-08-01T09:15:00Z'
-      },
-      {
-        student: 'Ana Martínez',
-        course: 'Java Avanzado',
-        status: 'COMPLETADA',
-        enrolled_at: '2025-07-30T16:45:00Z'
-      }
-    ];
   }
 
   private setupChartOptions(): void {
@@ -548,12 +459,16 @@ export class ViewComponent extends BaseFormComponent implements OnInit, AfterVie
     this.barChartOptions = {
       responsive: true,
       maintainAspectRatio: false,
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      },
       layout: {
         padding: {
-          top: 20,
-          bottom: 20,
-          left: 20,
-          right: 20
+          top: 30,
+          bottom: 60, // Aumentar padding inferior para las etiquetas rotadas
+          left: 30,
+          right: 30
         }
       },
       plugins: {
@@ -605,29 +520,37 @@ export class ViewComponent extends BaseFormComponent implements OnInit, AfterVie
             display: false
           },
           ticks: {
-            maxRotation: 30,
-            minRotation: 0,
+            maxRotation: 45,
+            minRotation: 30,
             font: {
               size: 12,
               weight: 'bold'
             },
-            padding: 10
+            padding: 10,
+            maxTicksLimit: false, // Permitir todas las etiquetas
+            autoSkip: false, // No omitir etiquetas automáticamente
+            callback: function (value, index, values) {
+              // Asegurar que se muestren todas las etiquetas
+              const label = this.getLabelForValue(value);
+              return label;
+            }
           },
           title: {
             display: true,
-            text: 'Cursos',
+            text: 'Cursos Disponibles',
             font: {
               size: 14,
               weight: 'bold'
             },
             padding: {
-              top: 10
+              top: 15,
+              bottom: 5
             }
           }
         },
         y: {
-          beginAtZero: true,
-          min: 0,
+          beginAtZero: false,
+          min: 0.5, // Rango mínimo de 0.5 como solicitado
           grid: {
             color: 'rgba(0,0,0,0.1)',
             drawBorder: true,
@@ -664,6 +587,103 @@ export class ViewComponent extends BaseFormComponent implements OnInit, AfterVie
       animation: {
         duration: 1500,
         easing: 'easeInOutQuart'
+      }
+    };
+
+    // Configuración para el pie chart de distribución de cursos
+    this.coursesPieChartOptions = {
+      responsive: true,
+      maintainAspectRatio: false, // Permitir que el gráfico se ajuste al contenedor
+      resizeDelay: 0, // Sin delay en el resize
+      layout: {
+        padding: {
+          top: 20,
+          bottom: 30,
+          left: 20,
+          right: 20
+        }
+      },
+      onResize: (chart, size) => {
+        // Forzar el ancho del canvas cuando se redimensiona
+        const canvas = chart.canvas;
+        if (canvas && canvas.parentElement) {
+          const container = canvas.closest('.chart-container-pie-fullwidth');
+          if (container) {
+            const containerWidth = container.clientWidth - 50; // Restar padding
+            chart.resize(containerWidth, size.height);
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'right',
+          align: 'center',
+          labels: {
+            usePointStyle: true,
+            padding: 15,
+            font: {
+              size: 12,
+              weight: 'bold'
+            },
+            boxWidth: 12,
+            boxHeight: 12,
+            generateLabels: function (chart) {
+              const data = chart.data;
+              if (data.labels.length && data.datasets.length) {
+                return data.labels.map((label, i) => {
+                  const dataset = data.datasets[0];
+                  const value = dataset.data[i];
+                  const total = dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = ((value / total) * 100).toFixed(1);
+                  return {
+                    text: `${label}: ${value} (${percentage}%)`,
+                    fillStyle: dataset.backgroundColor[i],
+                    strokeStyle: dataset.borderColor[i],
+                    lineWidth: dataset.borderWidth,
+                    pointStyle: 'circle',
+                    hidden: false,
+                    index: i
+                  };
+                });
+              }
+              return [];
+            }
+          }
+        },
+        title: {
+          display: true,
+          text: 'Distribución de Estudiantes por Curso',
+          font: {
+            size: 16,
+            weight: 'bold'
+          },
+          padding: {
+            top: 10,
+            bottom: 20
+          }
+        },
+        tooltip: {
+          titleFont: {
+            size: 14,
+            weight: 'bold'
+          },
+          bodyFont: {
+            size: 13
+          },
+          callbacks: {
+            label: function (context) {
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = ((context.parsed / total) * 100).toFixed(1);
+              return `${context.label}: ${context.parsed} estudiantes (${percentage}%)`;
+            }
+          }
+        }
+      },
+      elements: {
+        arc: {
+          borderWidth: 3,
+          borderColor: '#ffffff'
+        }
       }
     };
   }

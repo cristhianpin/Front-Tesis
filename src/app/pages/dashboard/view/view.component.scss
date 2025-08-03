@@ -161,31 +161,72 @@
   canvas {
     width: 100% !important;
     height: 100% !important;
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 100% !important;
+    max-height: 100% !important;
   }
   
   // Contenedor del gráfico Chart.js
   .chartjs-render-monitor {
     width: 100% !important;
     height: 100% !important;
+    max-width: none !important;
   }
   
-  // PrimeNG chart wrapper
+  // PrimeNG chart wrapper - Mejorado para ancho completo
   p-chart {
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
     display: flex !important;
+    min-width: 100% !important;
+    
+    > div {
+      width: 100% !important;
+      height: 100% !important;
+      position: relative !important;
+      min-width: 100% !important;
+    }
     
     .ui-chart {
       width: 100% !important;
       height: 100% !important;
+      min-width: 100% !important;
       
       canvas {
         width: 100% !important;
         height: 100% !important;
+        max-width: none !important;
+        min-width: 100% !important;
       }
     }
+    
+    // Forzar el ancho del canvas específicamente
+    canvas.chartjs-render-monitor {
+      width: 100% !important;
+      height: auto !important;
+      max-width: none !important;
+      min-width: 100% !important;
+    }
+    
+    // Asegurar que el div contenedor tenga el ancho completo
+    .chartjs-size-monitor {
+      width: 100% !important;
+    }
+  }
+
+  // Sobrescribir todos los estilos inline posibles
+  * {
+    max-width: none !important;
+    
+    &[style*="width"] {
+      width: 100% !important;
+    }
+  }
+
+  // Regla específica para el canvas con estilos inline
+  canvas[style*="width: 300px"],
+  canvas[style*="width:300px"] {
+    width: 100% !important;
+    max-width: none !important;
   }
 }
 
@@ -236,9 +277,39 @@
 }
 
 .chart-container-bar {
-  max-height: 450px; // Ampliar altura del gráfico de barras
-  min-height: 400px;
-  overflow: hidden;
+  max-height: 500px; // Aumentar altura para dar más espacio a las etiquetas
+  min-height: 450px; // Altura mínima generosa
+  overflow: visible; // Cambiar a visible para que las etiquetas no se corten
+  padding: 20px; // Agregar padding
+  
+  // Asegurar que el canvas use todo el espacio disponible
+  canvas {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  // Contenedor del gráfico Chart.js
+  .chartjs-render-monitor {
+    width: 100% !important;
+    height: 100% !important;
+  }
+  
+  // PrimeNG chart wrapper
+  p-chart {
+    width: 100%;
+    height: 100%;
+    display: flex !important;
+    
+    .ui-chart {
+      width: 100% !important;
+      height: 100% !important;
+      
+      canvas {
+        width: 100% !important;
+        height: 100% !important;
+      }
+    }
+  }
 }
 
   /* Table Improvements */
@@ -410,8 +481,9 @@
     }
     
     .chart-container-bar {
-      max-height: 300px; // Mantener tamaño más grande en tablets
-      min-height: 250px;
+      max-height: 350px; // Mantener tamaño decente en tablets
+      min-height: 300px;
+      overflow: visible; // Asegurar que las etiquetas no se corten
     }
     
     .table-responsive {
@@ -433,8 +505,9 @@
     }
     
     .chart-container-bar {
-      max-height: 220px; // Reducir en móviles pero mantener proporcional
-      min-height: 180px;
+      max-height: 280px; // Tamaño apropiado para móviles
+      min-height: 250px;
+      overflow: visible; // Permitir que las etiquetas sean visibles
     }
     
     nb-card[size="small"] nb-card-body {
@@ -498,6 +571,35 @@
 
   .text-muted {
     color: #6c757d !important;
+  }
+
+  // Reglas específicas para forzar ancho completo en gráficos pie
+  .chart-container-pie-fullwidth,
+  .chart-container-pie-fullwidth p-chart,
+  .chart-container-pie-fullwidth p-chart > div,
+  .chart-container-pie-fullwidth .ui-chart {
+    width: 100% !important;
+    min-width: 100% !important;
+  }
+
+  // Forzar canvas a usar todo el ancho disponible - Más específico
+  .chart-container-pie-fullwidth canvas,
+  .chart-container-pie-fullwidth canvas.chartjs-render-monitor {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 100% !important;
+    // Sobrescribir estilos inline de Chart.js
+    width: 100% !important;
+  }
+
+  // Reglas adicionales para sobrescribir estilos inline
+  .chart-container-pie-fullwidth [style*="width"] {
+    width: 100% !important;
+  }
+
+  // Forzar específicamente el div contenedor de Chart.js
+  .chart-container-pie-fullwidth > p-chart > div[style] {
+    width: 100% !important;
   }
 }
 

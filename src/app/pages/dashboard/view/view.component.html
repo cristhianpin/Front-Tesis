@@ -72,30 +72,44 @@
     <div class="row mb-3">
       <!-- Estado de Matrículas - Full Width -->
       <div class="col-12 mb-4">
-        <nb-card size="medium" class="chart-card">
+        <nb-card size="medium" class="chart-card h-100">
           <nb-card-header class="d-flex align-items-center py-3">
             <nb-icon icon="pie-chart-outline" class="mr-2"></nb-icon>
             <span>📊 Estados de Matrículas - Distribución General</span>
           </nb-card-header>
           <nb-card-body class="p-0">
-            <div class="chart-container-pie-fullwidth">
+            <div class="chart-container-pie-fullwidth" *ngIf="pieChartData; else noStatusData">
               <p-chart type="pie" [data]="pieChartData" [options]="chartOptions"></p-chart>
             </div>
+            <ng-template #noStatusData>
+              <div class="text-center p-5">
+                <nb-icon icon="inbox-outline" class="text-muted" style="font-size: 3rem"></nb-icon>
+                <h6 class="text-muted mt-3">Aún no existen registros</h6>
+                <p class="text-muted">No hay datos de estados de matrículas para mostrar</p>
+              </div>
+            </ng-template>
           </nb-card-body>
         </nb-card>
       </div>
 
-      <!-- Personas Matriculadas por Curso - Full Width -->
+      <!-- Personas Matriculadas por Curso - Pie Chart -->
       <div class="col-12 mb-4">
-        <nb-card size="medium" class="chart-card">
+        <nb-card size="medium" class="chart-card h-100">
           <nb-card-header class="d-flex align-items-center py-3">
-            <nb-icon icon="bar-chart-outline" class="mr-2"></nb-icon>
-            <span>� Personas Matriculadas por Curso - Total de Inscripciones</span>
+            <nb-icon icon="pie-chart-outline" class="mr-2"></nb-icon>
+            <span>📊 Distribución de Personas por Curso</span>
           </nb-card-header>
           <nb-card-body class="p-0">
-            <div class="chart-container-bar-fullwidth">
-              <p-chart type="bar" [data]="barChartData" [options]="barChartOptions"></p-chart>
+            <div class="chart-container-pie-fullwidth" *ngIf="coursesPieChartData; else noCourseData">
+              <p-chart type="pie" [data]="coursesPieChartData" [options]="coursesPieChartOptions"></p-chart>
             </div>
+            <ng-template #noCourseData>
+              <div class="text-center p-5">
+                <nb-icon icon="inbox-outline" class="text-muted" style="font-size: 3rem"></nb-icon>
+                <h6 class="text-muted mt-3">Aún no existen registros</h6>
+                <p class="text-muted">No hay datos de distribución por cursos para mostrar</p>
+              </div>
+            </ng-template>
           </nb-card-body>
         </nb-card>
       </div>
@@ -153,9 +167,10 @@
                   </tr>
                   <tr *ngIf="!latestEnrollments || latestEnrollments.length === 0">
                     <td colspan="4" class="text-center text-muted py-4">
-                      <nb-icon icon="inbox-outline"></nb-icon>
+                      <nb-icon icon="inbox-outline" style="font-size: 2rem"></nb-icon>
                       <br />
-                      <small>No hay inscripciones recientes</small>
+                      <h6 class="mt-2">Aún no existen registros</h6>
+                      <small>No hay inscripciones recientes para mostrar</small>
                     </td>
                   </tr>
                 </tbody>
